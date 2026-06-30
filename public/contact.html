@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>견적 문의 — 스마트푸드(주)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="header-slot"></div>
+<section class="page-head"><div class="container"><h1>견적 문의</h1><p>현장 정보를 남겨주시면 맞춤 견적으로 빠르게 연락드립니다.</p></div></section>
+<section class="section"><div class="container">
+  <div class="form-wrap">
+    <div class="form-grid">
+      <div class="form-row"><label>담당자명 *</label><input id="f-name" placeholder="홍길동"></div>
+      <div class="form-row"><label>연락처 *</label><input id="f-phone" placeholder="010-0000-0000"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>회사명 / 현장명</label><input id="f-company" placeholder="○○건설 / ○○현장"></div>
+      <div class="form-row"><label>예상 식수</label><input id="f-count" placeholder="예: 200식"></div>
+    </div>
+    <div class="form-row"><label>서비스 유형</label>
+      <select id="f-type">
+        <option>현장식당</option>
+        <option>구내식당</option>
+        <option>캐더링 (행사·연회)</option>
+        <option>기타 / 상담 후 결정</option>
+      </select>
+    </div>
+    <div class="form-row"><label>문의 내용 *</label><textarea id="f-msg" placeholder="현장 위치, 운영 기간, 요청사항 등을 자유롭게 작성해 주세요."></textarea></div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center" id="submitBtn"><i class="ti ti-send"></i> 문의 보내기</button>
+    <div class="msg" id="formMsg"></div>
+    <p style="text-align:center;color:var(--text-mute);font-size:13px;margin-top:20px">또는 전화 <a href="tel:0314218332" class="gold">031-421-8332</a> · 휴대폰 <a href="tel:01023609015" class="gold">010-2360-9015</a>로 바로 상담 가능합니다.</p>
+  </div>
+</div></section>
+<div id="footer-slot"></div>
+<script src="js/common.js"></script>
+<script type="module">
+  import { db } from './js/firebase-config.js';
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  mountLayout('contact');
+
+  const btn=document.getElementById('submitBtn');
+  const msg=document.getElementById('formMsg');
+  btn.addEventListener('click', async ()=>{
+    const name=document.getElementById('f-name').value.trim();
+    const phone=document.getElementById('f-phone').value.trim();
+    const message=document.getElementById('f-msg').value.trim();
+    if(!name||!phone||!message){ show('err','담당자명, 연락처, 문의 내용은 필수입니다.'); return; }
+    btn.disabled=true; btn.textContent='전송 중...';
+    try{
+      await addDoc(collection(db,'inquiries'),{
+        name, phone, message,
+        company:document.getElementById('f-company').value.trim(),
+        count:document.getElementById('f-count').value.trim(),
+        type:document.getElementById('f-type').value,
+        status:'신규',
+        createdAt: serverTimestamp()
+      });
+      show('ok','문의가 정상 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+      ['f-name','f-phone','f-company','f-count','f-msg'].forEach(id=>document.getElementById(id).value='');
+    }catch(e){
+      show('err','전송에 실패했습니다. 전화로 문의해 주세요. (Firebase 설정 확인)');
+    }
+    btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> 문의 보내기';
+  });
+  function show(type,text){ msg.className='msg '+type; msg.textContent=text; }
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /gallery/{file} {
+      allow read: if true;                 // 사진은 누구나 조회
+      // 업로드는 관리자만 + 이미지 형식 + 10MB 이하만 허용, 삭제는 관리자만
+      allow create, update: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null;
+    }
+  }
+}

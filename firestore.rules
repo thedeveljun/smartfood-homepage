@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 식단·공지: 모두 읽기 가능, 쓰기는 로그인한 관리자만
+    match /menus/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /notices/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // 문의: 누구나 생성 가능(단, 필드·길이 검증), 읽기·수정·삭제는 관리자만
+    match /inquiries/{id} {
+      allow create: if isValidInquiry();
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // 견적 문의 생성 시 스팸·악성 데이터 차단을 위한 검증
+    function isValidInquiry() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['name','phone','message','company','count','type','status','createdAt'])
+        && d.name is string    && d.name.size() > 0    && d.name.size() <= 50
+        && d.phone is string    && d.phone.size() > 0    && d.phone.size() <= 30
+        && d.message is string  && d.message.size() > 0  && d.message.size() <= 2000
+        && d.company is string  && d.company.size() <= 100
+        && d.count is string    && d.count.size() <= 50
+        && d.type is string     && d.type.size() <= 50
+        && d.status == '신규'
+        && d.createdAt == request.time;
+    }
+  }
+}

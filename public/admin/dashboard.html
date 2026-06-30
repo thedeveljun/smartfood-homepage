@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>관리자 — 스마트푸드(주)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .admin-head{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--gold-line);background:rgba(255,255,255,.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:24px 0 28px}
+  .tab{padding:10px 18px;border-radius:8px;font-size:14px;cursor:pointer;border:.5px solid var(--gold-dim);color:var(--text-dim);transition:.2s}
+  .tab.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+  .panel{display:none}.panel.active{display:block}
+  .admin-card{background:var(--bg-soft);border:.5px solid var(--gold-dim);border-radius:12px;padding:26px;margin-bottom:20px}
+  .admin-card h3{color:var(--cream);font-size:17px;margin-bottom:18px}
+  .list-row{display:flex;justify-content:space-between;align-items:center;padding:14px;border:.5px solid var(--gold-line);border-radius:8px;margin-bottom:10px;font-size:14px}
+  .del{color:#c0392b;cursor:pointer;font-size:13px}
+  .item-input-row{display:flex;gap:8px;margin-bottom:8px}
+  .item-input-row input{flex:1}
+  .item-input-row button{background:transparent;border:.5px solid var(--gold-dim);color:var(--text-dim);border-radius:8px;width:42px;cursor:pointer}
+  .thumb{width:70px;height:70px;object-fit:cover;border-radius:8px}
+  .badge{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--bg-soft2);color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="admin-head">
+  <div class="logo" style="font-size:17px"><span class="logo-mark"><i class="ti ti-settings"></i></span>관리자 대시보드</div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <a href="../index.html" class="gold" style="font-size:13px" target="_blank"><i class="ti ti-external-link"></i> 홈페이지</a>
+    <button class="btn btn-line" style="padding:8px 16px;font-size:13px" id="logoutBtn"><i class="ti ti-logout"></i> 로그아웃</button>
+  </div>
+</div>
+
+<div class="container" style="padding-top:8px;max-width:900px">
+  <div class="tabs">
+    <div class="tab active" data-tab="menu"><i class="ti ti-bowl"></i> 식단 등록</div>
+    <div class="tab" data-tab="notice"><i class="ti ti-speakerphone"></i> 공지사항</div>
+    <div class="tab" data-tab="inquiry"><i class="ti ti-mail"></i> 문의 내역</div>
+  </div>
+
+  <!-- 식단 등록 -->
+  <div class="panel active" id="panel-menu">
+    <div class="admin-card">
+      <h3>오늘의 식단 등록</h3>
+      <div class="form-grid">
+        <div class="form-row"><label>날짜</label><input type="date" id="m-date"></div>
+        <div class="form-row"><label>구분</label><select id="m-type"><option>중식</option><option>조식</option><option>석식</option></select></div>
+      </div>
+      <div class="form-row"><label>메뉴 항목</label>
+        <div id="m-items"></div>
+        <button onclick="addMenuItem()" style="background:transparent;border:.5px solid var(--gold-dim);color:var(--gold);padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer;margin-top:4px"><i class="ti ti-plus"></i> 항목 추가</button>
+      </div>
+      <button class="btn btn-gold" id="saveMenuBtn"><i class="ti ti-check"></i> 식단 저장</button>
+      <div class="msg" id="menuMsg"></div>
+    </div>
+    <div class="admin-card"><h3>등록된 식단</h3><div id="menuListAdmin"></div></div>
+  </div>
+
+  <!-- 공지사항 -->
+  <div class="panel" id="panel-notice">
+    <div class="admin-card">
+      <h3>공지사항 작성</h3>
+      <div class="form-row"><label>제목</label><input id="n-title" placeholder="공지 제목"></div>
+      <div class="form-row"><label>내용</label><textarea id="n-body" placeholder="공지 내용"></textarea></div>
+      <button class="btn btn-gold" id="saveNoticeBtn"><i class="ti ti-check"></i> 공지 등록</button>
+      <div class="msg" id="noticeMsg"></div>
+    </div>
+    <div class="admin-card"><h3>등록된 공지</h3><div id="noticeListAdmin"></div></div>
+  </div>
+
+  <!-- 문의 내역 -->
+  <div class="panel" id="panel-inquiry">
+    <div class="admin-card"><h3>견적 문의 내역</h3><div id="inquiryListAdmin"></div></div>
+  </div>
+</div>
+
+<script type="module">
+  import { db, auth } from '../js/firebase-config.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 인증 가드
+  onAuthStateChanged(auth, u=>{ if(!u) location.href='index.html'; else init(); });
+  document.getElementById('logoutBtn').onclick=()=>signOut(auth).then(()=>location.href='index.html');
+
+  // 탭 전환
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+  });
+
+  function show(id,type,text){const m=document.getElementById(id);m.className='msg '+type;m.textContent=text;setTimeout(()=>m.className='msg',3000);}
+
+  // ===== 식단 =====
+  window.addMenuItem=(val='')=>{
+    const div=document.createElement('div'); div.className='item-input-row';
+    div.innerHTML=`<input class="menu-item-input" value="${val}" placeholder="예: 제육볶음"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+    document.getElementById('m-items').appendChild(div);
+  };
+  document.getElementById('saveMenuBtn').onclick=async()=>{
+    const date=document.getElementById('m-date').value;
+    const items=[...document.querySelectorAll('.menu-item-input')].map(i=>i.value.trim()).filter(Boolean);
+    if(!date||!items.length){show('menuMsg','err','날짜와 메뉴 항목을 입력하세요.');return;}
+    await addDoc(collection(db,'menus'),{date,mealType:document.getElementById('m-type').value,items,createdAt:serverTimestamp()});
+    show('menuMsg','ok','식단이 저장되었습니다.');
+    document.getElementById('m-items').innerHTML=''; addMenuItem();
+    loadMenus();
+  };
+  async function loadMenus(){
+    const snap=await getDocs(query(collection(db,'menus'),orderBy('date','desc')));
+    document.getElementById('menuListAdmin').innerHTML=snap.docs.map(d=>{
+      const m=d.data();
+      return `<div class="list-row"><span><b>${m.date}</b> · ${m.mealType} <span style="color:var(--text-mute)">${(m.items||[]).join(', ')}</span></span><span class="del" onclick="delMenu('${d.id}')">삭제</span></div>`;
+    }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 식단이 없습니다.</p>';
+  }
+  window.delMenu=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'menus',id));loadMenus();} };
+
+  // ===== 공지 =====
+  document.getElementById('saveNoticeBtn').onclick=async()=>{
+    const title=document.getElementById('n-title').value.trim();
+    const body=document.getElementById('n-body').value.trim();
+    if(!title||!body){show('noticeMsg','err','제목과 내용을 입력하세요.');return;}
+    await addDoc(collection(db,'notices'),{title,body,createdAt:serverTimestamp()});
+    show('noticeMsg','ok','공지가 등록되었습니다.');
+    document.getElementById('n-title').value='';document.getElementById('n-body').value='';
+    loadNotices();
+  };
+  async function loadNotices(){
+    const snap=await getDocs(query(collection(db,'notices'),orderBy('createdAt','desc')));
+    document.getElementById('noticeListAdmin').innerHTML=snap.docs.map(d=>{
+      const n=d.data();
+      return `<div class="list-row"><span><b>${n.title}</b><br><span style="color:var(--text-mute);font-size:13px">${n.body}</span></span><span class="del" onclick="delNotice('${d.id}')">삭제</span></div>`;
+    }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 공지가 없습니다.</p>';
+  }
+  window.delNotice=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'notices',id));loadNotices();} };
+
+  // ===== 문의 =====
+  async function loadInquiries(){
+    const snap=await getDocs(query(collection(db,'inquiries'),orderBy('createdAt','desc')));
+    document.getElementById('inquiryListAdmin').innerHTML=snap.docs.map(d=>{
+      const q=d.data();
+      return `<div class="list-row" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div style="display:flex;justify-content:space-between"><span><b>${q.name}</b> · <a href="tel:${q.phone}" class="gold">${q.phone}</a> <span class="badge">${q.type||''}</span></span><span class="del" onclick="delInq('${d.id}')">삭제</span></div>
+        <div style="color:var(--text-mute);font-size:13px">${q.company||''} ${q.count?'· '+q.count:''}</div>
+        <div style="font-size:14px">${q.message}</div></div>`;
+    }).join('')||'<p style="color:var(--text-mute);font-size:14px">접수된 문의가 없습니다.</p>';
+  }
+  window.delInq=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'inquiries',id));loadInquiries();} };
+
+  function init(){ addMenuItem(); loadMenus(); loadNotices(); loadInquiries(); }
+</script>
+</body>
+</html>
