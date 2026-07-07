@@ -33,7 +33,6 @@ function renderHeader(active){
     <button class="nav-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')"><i class="ti ti-menu-2"></i></button>
     <nav class="nav-menu" id="navMenu">
       ${links}
-      <a href="tel:${SITE.telRaw}" class="nav-call"><i class="ti ti-phone"></i> ${SITE.tel}</a>
     </nav>
   </div></header>`;
 }
