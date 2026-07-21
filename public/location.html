@@ -1,9 +1,13 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=1200"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.1.0/dist/tabler-icons.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"><link rel="stylesheet" href="css/style.css"><title>오시는 길 — 스마트푸드(주)</title></head><body>
 <div id="header-slot"></div>
-<section class="page-head"><div class="container"><h1>오시는 길</h1><p>본사 위치와 연락처 안내입니다.</p></div></section>
+<section class="page-head"><div class="container"><h1>오시는 길</h1></div></section>
 <section class="section"><div class="container grid-2" style="gap:40px;align-items:start">
-  <div class="map-box">
-    <iframe src="https://maps.google.com/maps?q=경기도 안양시 동안구 시민대로 230&output=embed&z=16" loading="lazy"></iframe>
+  <div>
+    <div class="map-box"><div id="kakaoMap" style="width:100%;height:100%"></div></div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <a class="btn btn-gold" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener"><i class="ti ti-map-2"></i> 카카오맵에서 보기</a>
+      <a class="btn btn-line" id="kakaoNavBtn" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener"><i class="ti ti-navigation"></i> 카카오내비 길찾기</a>
+    </div>
   </div>
   <div>
     <h2 class="section-title" style="font-size:24px">본사 안내</h2>
@@ -18,4 +22,49 @@
 </div></section>
 <div id="footer-slot"></div>
 <script src="js/common.js"></script><script>mountLayout('location')</script>
+<script>
+(function(){
+  // 카카오 개발자센터(https://developers.kakao.com) > 내 애플리케이션 > 앱 키 > JavaScript 키 를 붙여넣으세요.
+  // 키를 넣기 전에도 아래 '카카오맵 보기 / 길찾기' 버튼은 정상 작동합니다.
+  var KAKAO_JS_KEY = "YOUR_KAKAO_JS_KEY";
+  var ADDRESS = "경기도 안양시 동안구 시민대로 230";
+  var PLACE = "스마트푸드(주)";
+  var mapEl = document.getElementById('kakaoMap');
+  if(!mapEl) return;
+
+  function fallback(){
+    mapEl.innerHTML =
+      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;text-align:center;padding:24px;color:var(--text-dim)">'
+      + '<i class="ti ti-map-pin" style="font-size:36px;color:var(--green)"></i>'
+      + '<b style="color:var(--cream);font-size:16px">' + PLACE + '</b>'
+      + '<span style="font-size:13.5px">' + ADDRESS + ' B동 609호</span>'
+      + '<a class="gold" style="font-size:13px;margin-top:4px" href="https://map.kakao.com/link/search/' + encodeURIComponent(ADDRESS) + '" target="_blank" rel="noopener">카카오맵에서 위치 열기 →</a>'
+      + '</div>';
+  }
+
+  if(KAKAO_JS_KEY === "YOUR_KAKAO_JS_KEY"){ fallback(); return; }
+
+  var s = document.createElement('script');
+  s.src = "https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=" + KAKAO_JS_KEY + "&libraries=services";
+  s.onload = function(){
+    kakao.maps.load(function(){
+      var map = new kakao.maps.Map(mapEl, { center: new kakao.maps.LatLng(37.3948, 126.9585), level: 3 });
+      new kakao.maps.services.Geocoder().addressSearch(ADDRESS, function(result, status){
+        if(status !== kakao.maps.services.Status.OK){ return; }
+        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        map.setCenter(coords);
+        var marker = new kakao.maps.Marker({ map: map, position: coords });
+        new kakao.maps.InfoWindow({ content: '<div style="padding:6px 12px;font-size:13px;font-weight:700">' + PLACE + '</div>' }).open(map, marker);
+        var nav = document.getElementById('kakaoNavBtn');
+        if(nav){ nav.href = "https://map.kakao.com/link/to/" + encodeURIComponent(PLACE) + "," + result[0].y + "," + result[0].x; }
+        kakao.maps.event.addListener(marker, 'click', function(){
+          window.open("https://map.kakao.com/link/map/" + encodeURIComponent(PLACE) + "," + result[0].y + "," + result[0].x);
+        });
+      });
+    });
+  };
+  s.onerror = fallback;
+  document.head.appendChild(s);
+})();
+</script>
 </body></html>

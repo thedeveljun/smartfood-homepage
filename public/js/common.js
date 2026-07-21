@@ -28,7 +28,7 @@ function renderHeader(active){
   return `
   <header class="header"><div class="container nav">
     <a href="index.html" class="logo">
-      <span class="logo-mark"><i class="ti ti-leaf"></i></span>${SITE.name}
+      <img src="img/logo.jpg" class="logo-img" alt="${SITE.name}">
     </a>
     <button class="nav-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')"><i class="ti ti-menu-2"></i></button>
     <nav class="nav-menu" id="navMenu">
@@ -43,7 +43,7 @@ function renderFooter(){
   <footer class="footer"><div class="container">
     <div class="footer-grid">
       <div>
-        <div class="logo" style="margin-bottom:14px"><span class="logo-mark"><i class="ti ti-leaf"></i></span>${SITE.name}</div>
+        <div class="logo" style="margin-bottom:14px"><img src="img/logo.jpg" class="logo-img logo-img--footer" alt="${SITE.name}"></div>
         <p>건설현장 식당 전문기업<br>신선하고 알찬 식단으로<br>건강한 현장을 책임집니다.</p>
       </div>
       <div>
@@ -69,7 +69,16 @@ function renderFooter(){
   </div>`;
 }
 
+// 파비콘(브라우저 탭 심볼) 일괄 적용
+function setFavicon(){
+  let link = document.querySelector("link[rel~='icon']");
+  if(!link){ link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+  link.type = 'image/jpeg';
+  link.href = 'img/symbol.jpg';
+}
+
 function mountLayout(active){
+  setFavicon();
   const h=document.getElementById('header-slot'); if(h) h.innerHTML=renderHeader(active);
   const f=document.getElementById('footer-slot'); if(f) f.innerHTML=renderFooter();
 }
