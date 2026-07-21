@@ -13,52 +13,10 @@
     <a href="contact.html" class="btn btn-gold" style="margin-top:24px"><i class="ti ti-file-text"></i> 견적 문의하기</a>
   </div>
   <div>
-    <div class="map-box"><div id="kakaoMap" style="width:100%;height:100%"></div></div>
+    <div class="map-box"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=126.9520%2C37.3905%2C126.9650%2C37.3990&layer=mapnik&marker=37.3948%2C126.9585" style="width:100%;height:100%;border:0" loading="lazy" title="스마트푸드(주) 위치"></iframe></div>
+    <div style="margin-top:10px;text-align:right"><a class="gold" style="font-size:13px" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener">카카오맵에서 크게 보기 →</a></div>
   </div>
 </div></section>
 <div id="footer-slot"></div>
 <script src="js/common.js"></script><script>mountLayout('location')</script>
-<script>
-(function(){
-  // 카카오 개발자센터(https://developers.kakao.com) > 내 애플리케이션 > 앱 키 > JavaScript 키 를 붙여넣으세요.
-  // 배포 도메인(예: GitHub Pages 주소)을 [플랫폼 > Web]에 등록해야 지도가 표시됩니다.
-  var KAKAO_JS_KEY = "YOUR_KAKAO_JS_KEY";
-  var ADDRESS = "경기도 안양시 동안구 시민대로 230";
-  var PLACE = "스마트푸드(주)";
-  var mapEl = document.getElementById('kakaoMap');
-  if(!mapEl) return;
-
-  function fallback(){
-    mapEl.innerHTML =
-      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;text-align:center;padding:24px;color:var(--text-dim)">'
-      + '<i class="ti ti-map-pin" style="font-size:36px;color:var(--green)"></i>'
-      + '<b style="color:var(--cream);font-size:16px">' + PLACE + '</b>'
-      + '<span style="font-size:13.5px">' + ADDRESS + ' B동 609호</span>'
-      + '<a class="gold" style="font-size:13px;margin-top:4px" href="https://map.kakao.com/link/search/' + encodeURIComponent(ADDRESS) + '" target="_blank" rel="noopener">카카오맵에서 위치 열기 →</a>'
-      + '</div>';
-  }
-
-  if(KAKAO_JS_KEY === "YOUR_KAKAO_JS_KEY"){ fallback(); return; }
-
-  var s = document.createElement('script');
-  s.src = "https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=" + KAKAO_JS_KEY + "&libraries=services";
-  s.onload = function(){
-    kakao.maps.load(function(){
-      var map = new kakao.maps.Map(mapEl, { center: new kakao.maps.LatLng(37.3948, 126.9585), level: 3 });
-      new kakao.maps.services.Geocoder().addressSearch(ADDRESS, function(result, status){
-        if(status !== kakao.maps.services.Status.OK){ return; }
-        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-        map.setCenter(coords);
-        var marker = new kakao.maps.Marker({ map: map, position: coords });
-        new kakao.maps.InfoWindow({ content: '<div style="padding:6px 12px;font-size:13px;font-weight:700">' + PLACE + '</div>' }).open(map, marker);
-        kakao.maps.event.addListener(marker, 'click', function(){
-          window.open("https://map.kakao.com/link/map/" + encodeURIComponent(PLACE) + "," + result[0].y + "," + result[0].x);
-        });
-      });
-    });
-  };
-  s.onerror = fallback;
-  document.head.appendChild(s);
-})();
-</script>
 </body></html>
