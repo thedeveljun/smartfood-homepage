@@ -1,8 +1,8 @@
 /* ===== 스마트푸드(주) — 공통 스타일 (차콜 & 웜샌드 에디토리얼 테마) ===== */
 :root{
   --bg:#ffffff;          /* 화이트 배경 */
-  --bg-soft:#ffffff;     /* 카드 배경 (화이트) */
-  --bg-soft2:#eef7f1;    /* 아주 옅은 그린 틴트 (아이콘/칩 포인트용) */
+  --bg-soft:#eff8f2;     /* 카드 배경 (소프트 그린 틴트) */
+  --bg-soft2:#dcefe4;    /* 진한 그린 틴트 (아이콘/칩 — 카드와 대비) */
   --bg-tint:#ffffff;     /* 섹션 교차용 (전체 흰색 통일) */
   --green:#1aa457;       /* 메인 포인트 = 프레시 그린 (전역 참조 호환) */
   --green-deep:#0f3d2a;  /* 푸터용 딥 그린 */
@@ -83,7 +83,7 @@ img{max-width:100%;display:block}
 
 /* ===== 통계 바 ===== */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gold-line);border-top:1px solid var(--gold-line);border-bottom:1px solid var(--gold-line)}
-.stat{background:var(--bg);padding:30px 16px;text-align:center}
+.stat{background:var(--bg-soft);padding:30px 16px;text-align:center}
 .stat .num{font-size:32px;font-weight:800;color:var(--green)}
 .stat .num span{font-size:15px}
 .stat .lbl{font-size:13px;color:var(--text-dim);margin-top:6px}
@@ -91,6 +91,8 @@ img{max-width:100%;display:block}
 /* ===== 카드/그리드 ===== */
 .card{background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:var(--radius);overflow:hidden;transition:.2s}
 .card:hover{border-color:var(--green);box-shadow:0 10px 26px rgba(26,164,87,.13);transform:translateY(-3px)}
+/* 위생·안전(체크리스트) 카드 : 소프트 틸 */
+.card:has(.check-list){background:#e8f5f4}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 
@@ -136,7 +138,7 @@ img{max-width:100%;display:block}
 .step p{font-size:13px;color:var(--text-dim);line-height:1.6}
 
 /* 식단 박스 */
-.menu-box{background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:var(--radius);padding:11px 20px}
+.menu-box{background:#f2f8e9;border:2px solid var(--gold-line);border-radius:var(--radius);padding:11px 20px}
 .menu-date{font-size:18px;color:var(--green);margin-bottom:8px;font-weight:700}
 .menu-note{font-size:.84rem;color:#999999;font-weight:400;margin-top:12px}
 .menu-items{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -161,7 +163,7 @@ img{max-width:100%;display:block}
 
 /* 3대 서비스 정책 */
 .policy{display:flex;flex-direction:column;gap:16px;margin-top:26px}
-.policy-row{display:flex;gap:20px;align-items:center;background:#fff;border:1px solid var(--gold-line);border-radius:var(--radius);padding:20px 24px;flex-wrap:wrap}
+.policy-row{display:flex;gap:20px;align-items:center;background:#e8f5f4;border:1px solid var(--gold-line);border-radius:var(--radius);padding:20px 24px;flex-wrap:wrap}
 .policy-head{min-width:160px;font-size:17px;font-weight:800;color:var(--cream);display:flex;align-items:center;gap:10px}
 .policy-head::before{content:'';width:6px;height:24px;border-radius:3px;background:linear-gradient(var(--green),var(--accent))}
 .policy-items{display:flex;gap:10px;flex-wrap:wrap;flex:1}
@@ -171,7 +173,7 @@ img{max-width:100%;display:block}
 .record-table{width:100%;border-collapse:collapse;font-size:14px}
 .record-table th{background:var(--bg-soft2);color:var(--green);padding:14px;text-align:left;font-weight:700;font-size:13px}
 .record-table td{padding:14px;border-bottom:1px solid var(--gold-line);color:var(--text-dim)}
-.record-table tbody tr:hover td{background:#f6f1ea}
+.record-table tbody tr:hover td{background:#e6f5ee}
 /* 회사 개요(키-값) 테이블 */
 .info-table th{background:var(--bg-soft2);color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid var(--gold-line)}
 .info-table td{color:var(--text-dim)}
@@ -210,7 +212,7 @@ img{max-width:100%;display:block}
 .tree li:last-child::before{border-right:1.5px solid var(--line);border-radius:0 10px 0 0}
 .tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:1.5px solid var(--line);width:0;height:30px}
 /* 공통 박스 */
-.tree .org-box{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:#fff;border:2px solid var(--gold-line);border-radius:14px;padding:14px 26px;min-width:130px;font-size:14.5px;font-weight:700;letter-spacing:.2px;color:var(--cream);box-shadow:0 4px 16px rgba(18,45,32,.06);white-space:nowrap;transition:transform .18s ease,box-shadow .18s ease}
+.tree .org-box{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:14px;padding:14px 26px;min-width:130px;font-size:14.5px;font-weight:700;letter-spacing:.2px;color:var(--cream);box-shadow:0 4px 16px rgba(18,45,32,.06);white-space:nowrap;transition:transform .18s ease,box-shadow .18s ease}
 .tree .org-box:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(18,45,32,.12)}
 /* 대표이사·사장 : 프레시 그린 카드 */
 .tree .org-box.lead{background:linear-gradient(155deg,#23b768 0%,#129150 100%);border:0;color:#fff;padding:18px 20px;width:213px;justify-content:center;box-shadow:0 12px 26px rgba(18,120,74,.30)}
