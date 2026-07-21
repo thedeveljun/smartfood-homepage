@@ -92,7 +92,7 @@ img{max-width:100%;display:block}
 .card{background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:var(--radius);overflow:hidden;transition:.2s}
 .card:hover{border-color:var(--green);box-shadow:0 10px 26px rgba(26,164,87,.13);transform:translateY(-3px)}
 /* 위생·안전(체크리스트) 카드 : 소프트 틸 */
-.card:has(.check-list){background:#e8f5f4}
+.card:has(.check-list){background:#f7f2ea;border-color:#ece4d3}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 
@@ -101,6 +101,19 @@ img{max-width:100%;display:block}
 .svc .ic{width:58px;height:58px;border-radius:14px;background:var(--bg-soft2);color:var(--green);font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
 .svc h3{font-size:18px;color:var(--cream);margin-bottom:10px}
 .svc p{font-size:14px;color:var(--text-dim)}
+.reason-list{display:grid;grid-template-columns:1fr 1fr;padding:8px 14px}
+.reason-item{display:flex;align-items:center;gap:18px;padding:22px 22px}
+.reason-item:nth-child(odd){border-right:1px solid var(--gold-line)}
+.reason-item:nth-child(-n+2){border-bottom:1px solid var(--gold-line)}
+.reason-item .ic{width:46px;height:46px;border-radius:12px;background:var(--bg-soft2);color:var(--green);font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.reason-item h3{font-size:18px;color:var(--cream);margin-bottom:5px}
+.reason-item p{font-size:14px;color:var(--text-dim);line-height:1.6}
+.reason-list.indigo{background:#e8ebfa;border-color:#d6dbf4}
+.reason-list.indigo .reason-item{border-color:#d6dbf4}
+.reason-list.indigo .reason-item .ic{background:#dadffb;color:#4f57c0}
+.promise .card{background:#e8ebfa;border-color:#d6dbf4}
+.promise .card:hover{border-color:#8b93d8;box-shadow:0 10px 26px rgba(75,85,190,.15)}
+.promise .card .ic{background:#dadffb;color:#4f57c0}
 
 /* 계절별 메뉴 카드 (이미지) */
 .season-card{display:flex;flex-direction:column}
@@ -130,15 +143,15 @@ img{max-width:100%;display:block}
 
 /* 이용 절차 (프로세스) */
 .process{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:8px}
-.step{position:relative;background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:var(--radius);padding:28px 18px 24px;text-align:center;transition:.2s}
-.step:hover{border-color:var(--green);box-shadow:0 10px 26px rgba(26,164,87,.13);transform:translateY(-3px)}
-.step-no{position:absolute;top:12px;right:14px;font-size:14px;font-weight:800;color:var(--gold-dim)}
-.step-ic{width:54px;height:54px;border-radius:50%;background:var(--bg-soft2);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.step{position:relative;background:#e8ebfa;border:2px solid #d6dbf4;border-radius:var(--radius);padding:28px 18px 24px;text-align:center;transition:.2s}
+.step:hover{border-color:#8b93d8;box-shadow:0 10px 26px rgba(75,85,190,.15);transform:translateY(-3px)}
+.step-no{position:absolute;top:12px;right:14px;font-size:14px;font-weight:800;color:#a7add6}
+.step-ic{width:54px;height:54px;border-radius:50%;background:#dadffb;color:#4f57c0;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .step h4{font-size:15.5px;color:var(--cream);margin-bottom:8px}
 .step p{font-size:13px;color:var(--text-dim);line-height:1.6}
 
 /* 식단 박스 */
-.menu-box{background:#f2f8e9;border:2px solid var(--gold-line);border-radius:var(--radius);padding:11px 20px}
+.menu-box{background:#f8f5ee;border:2px solid #e7dfcd;border-radius:var(--radius);padding:11px 20px}
 .menu-date{font-size:18px;color:var(--green);margin-bottom:8px;font-weight:700}
 .menu-note{font-size:.84rem;color:#999999;font-weight:400;margin-top:12px}
 .menu-items{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -163,25 +176,27 @@ img{max-width:100%;display:block}
 
 /* 3대 서비스 정책 */
 .policy{display:flex;flex-direction:column;gap:16px;margin-top:26px}
-.policy-row{display:flex;gap:20px;align-items:center;background:#e8f5f4;border:1px solid var(--gold-line);border-radius:var(--radius);padding:20px 24px;flex-wrap:wrap}
+.policy-row{display:flex;gap:20px;align-items:center;background:#e8ebfa;border:1px solid #d6dbf4;border-radius:var(--radius);padding:20px 24px;flex-wrap:wrap}
 .policy-head{min-width:160px;font-size:17px;font-weight:800;color:var(--cream);display:flex;align-items:center;gap:10px}
-.policy-head::before{content:'';width:6px;height:24px;border-radius:3px;background:linear-gradient(var(--green),var(--accent))}
+.policy-head::before{content:'';width:6px;height:24px;border-radius:3px;background:linear-gradient(#5b63c4,#8b93d8)}
 .policy-items{display:flex;gap:10px;flex-wrap:wrap;flex:1}
-.policy-items span{background:var(--bg-soft2);color:var(--green);font-weight:700;font-size:14.5px;padding:10px 20px;border-radius:30px}
+.policy-items span{background:#dadffb;color:#4f57c0;font-weight:700;font-size:14.5px;padding:10px 20px;border-radius:30px}
 
 /* 실적/정보 테이블 */
 .record-table{width:100%;border-collapse:collapse;font-size:14px}
 .record-table th{background:var(--bg-soft2);color:var(--green);padding:14px;text-align:left;font-weight:700;font-size:13px}
 .record-table td{padding:14px;border-bottom:1px solid var(--gold-line);color:var(--text-dim)}
+.record-table:not(.info-table) tbody tr:nth-child(odd) td{background:#ffffff}   /* 흰색 */
+.record-table:not(.info-table) tbody tr:nth-child(even) td{background:#eef0fb}  /* 연한 인디고 파스텔 */
 .record-table tbody tr:hover td{background:#e6f5ee}
 /* 회사 개요(키-값) 테이블 */
-.info-table th{background:var(--bg-soft2);color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid var(--gold-line)}
+.info-table th{background:#f5efe1;color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid #ece4d3}
 .info-table td{color:var(--text-dim)}
 
 /* 거래 건설사 칩 */
 .partners{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.partners span{background:var(--bg-soft);border:1px solid var(--gold-line);border-radius:30px;padding:10px 20px;font-size:14.5px;color:var(--text-dim);font-weight:600;transition:.2s}
-.partners span:hover{border-color:var(--green);color:var(--green);transform:translateY(-2px)}
+.partners span{background:#e8ebfa;border:1px solid #d6dbf4;border-radius:30px;padding:10px 20px;font-size:14.5px;color:var(--text-dim);font-weight:600;transition:.2s}
+.partners span:hover{border-color:#8b93d8;color:#4f57c0;transform:translateY(-2px)}
 
 /* 연혁 타임라인 */
 .timeline{list-style:none;padding-left:6px}
@@ -277,6 +292,11 @@ img{max-width:100%;display:block}
   .stats{grid-template-columns:1fr 1fr}
   .process{grid-template-columns:1fr 1fr}
   .svc{padding:26px 22px}
+  .reason-list{grid-template-columns:1fr;padding:4px 20px}
+  .reason-item{gap:15px;padding:18px 0;border-bottom:1px solid var(--gold-line)}
+  .reason-item:nth-child(odd){border-right:none}
+  .reason-item:last-child{border-bottom:none}
+  .reason-item .ic{width:40px;height:40px;font-size:19px}
   .svc-photo{min-height:240px}
   .menu-box{padding:18px 20px}
   .hero{min-height:204px;padding:31px 0}

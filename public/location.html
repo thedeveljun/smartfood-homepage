@@ -3,14 +3,7 @@
 <section class="page-head"><div class="container"><h1>오시는 길</h1></div></section>
 <section class="section"><div class="container grid-2" style="gap:40px;align-items:start">
   <div>
-    <div class="map-box"><div id="kakaoMap" style="width:100%;height:100%"></div></div>
-    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-      <a class="btn btn-gold" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener"><i class="ti ti-map-2"></i> 카카오맵에서 보기</a>
-      <a class="btn btn-line" id="kakaoNavBtn" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener"><i class="ti ti-navigation"></i> 카카오내비 길찾기</a>
-    </div>
-  </div>
-  <div>
-    <h2 class="section-title" style="font-size:24px">본사 안내</h2>
+    <h2 class="section-title" style="font-size:24px">본사</h2>
     <ul class="info-list">
       <li><span class="ic"><i class="ti ti-map-pin"></i></span><span>경기도 안양시 동안구 시민대로 230 B동 609호<br><span style="color:var(--text-mute);font-size:13px">지하철 4호선 평촌역 인근 (관양동)</span></span></li>
       <li><span class="ic"><i class="ti ti-phone"></i></span><a href="tel:0314218332" class="gold">031-421-8332</a></li>
@@ -19,13 +12,16 @@
     </ul>
     <a href="contact.html" class="btn btn-gold" style="margin-top:24px"><i class="ti ti-file-text"></i> 견적 문의하기</a>
   </div>
+  <div>
+    <div class="map-box"><div id="kakaoMap" style="width:100%;height:100%"></div></div>
+  </div>
 </div></section>
 <div id="footer-slot"></div>
 <script src="js/common.js"></script><script>mountLayout('location')</script>
 <script>
 (function(){
   // 카카오 개발자센터(https://developers.kakao.com) > 내 애플리케이션 > 앱 키 > JavaScript 키 를 붙여넣으세요.
-  // 키를 넣기 전에도 아래 '카카오맵 보기 / 길찾기' 버튼은 정상 작동합니다.
+  // 배포 도메인(예: GitHub Pages 주소)을 [플랫폼 > Web]에 등록해야 지도가 표시됩니다.
   var KAKAO_JS_KEY = "YOUR_KAKAO_JS_KEY";
   var ADDRESS = "경기도 안양시 동안구 시민대로 230";
   var PLACE = "스마트푸드(주)";
@@ -55,8 +51,6 @@
         map.setCenter(coords);
         var marker = new kakao.maps.Marker({ map: map, position: coords });
         new kakao.maps.InfoWindow({ content: '<div style="padding:6px 12px;font-size:13px;font-weight:700">' + PLACE + '</div>' }).open(map, marker);
-        var nav = document.getElementById('kakaoNavBtn');
-        if(nav){ nav.href = "https://map.kakao.com/link/to/" + encodeURIComponent(PLACE) + "," + result[0].y + "," + result[0].x; }
         kakao.maps.event.addListener(marker, 'click', function(){
           window.open("https://map.kakao.com/link/map/" + encodeURIComponent(PLACE) + "," + result[0].y + "," + result[0].x);
         });

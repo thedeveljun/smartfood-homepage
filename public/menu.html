@@ -116,7 +116,7 @@
       ['현미밥','김치찌개','불고기','두부부침','도라지무침','배추김치'],
     ];
     list.innerHTML = sample.map((items,idx)=>menuBox(`예시 식단 ${idx+1}`,'중식',items)).join('')
-      + '<div class="menu-box"><div class="menu-note" style="margin-top:0">※ 예시 식단입니다. 관리자에서 식단을 등록하면 실제 식단이 표시됩니다.</div></div>';
+      + '<div class="menu-note" style="margin-top:14px">※ 예시 식단입니다. 관리자에서 식단을 등록하면 실제 식단이 표시됩니다.</div>';
   }
 
   async function loadMenus(){
