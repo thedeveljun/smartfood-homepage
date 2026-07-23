@@ -54,6 +54,7 @@
     <div class="tab" data-tab="services"><i class="ti ti-tools-kitchen-2"></i> 서비스</div>
     <div class="tab" data-tab="records"><i class="ti ti-chart-bar"></i> 운영 실적</div>
     <div class="tab" data-tab="gallery"><i class="ti ti-camera"></i> 현장 사진</div>
+    <div class="tab" data-tab="theme"><i class="ti ti-palette"></i> 디자인</div>
     <div class="tab" data-tab="notice"><i class="ti ti-speakerphone"></i> 공지사항</div>
     <div class="tab" data-tab="inquiry"><i class="ti ti-mail"></i> 문의 내역</div>
   </div>
@@ -269,6 +270,34 @@
       <p class="hint">사진이 1장 이상 등록되면 홈페이지 갤러리가 등록된 사진으로 교체됩니다.</p>
     </div>
     <div class="admin-card"><h3>등록된 사진</h3><div id="galleryListAdmin" class="g-admin"></div></div>
+  </div>
+
+  <!-- 디자인 (사이트 색상) -->
+  <div class="panel" id="panel-theme">
+    <div class="admin-card">
+      <h3>사이트 색상 <span class="hint" style="font-weight:400">— 저장하면 홈페이지 전체에 반영됩니다</span></h3>
+      <p class="hint" style="margin:-8px 0 12px">테마 프리셋을 고르거나, 아래에서 색상을 직접 조정하세요. 색을 바꾸면 이 화면에서 바로 미리보기됩니다.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+        <button class="add-btn" data-preset="green">🌿 기본 그린</button>
+        <button class="add-btn" data-preset="blue">🌊 프레시 블루</button>
+        <button class="add-btn" data-preset="brown">🍞 웜 브라운</button>
+        <button class="add-btn" data-preset="charcoal">🌙 차콜 골드</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>포인트 컬러 (버튼·강조)</label><input type="color" id="t-point" style="height:44px;padding:4px"></div>
+        <div class="form-row"><label>바탕 색상 (페이지 배경)</label><input type="color" id="t-bg" style="height:44px;padding:4px"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>카드 배경</label><input type="color" id="t-card" style="height:44px;padding:4px"></div>
+        <div class="form-row"><label>아이콘·칩 배경</label><input type="color" id="t-chip" style="height:44px;padding:4px"></div>
+      </div>
+      <div class="form-row"><label>푸터 배경</label><input type="color" id="t-footer" style="height:44px;padding:4px;max-width:260px"></div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-gold" id="saveThemeBtn"><i class="ti ti-check"></i> 색상 저장</button>
+        <button class="btn btn-line" id="resetThemeBtn"><i class="ti ti-restore"></i> 기본값 복원</button>
+      </div>
+      <div class="msg" id="themeMsg"></div>
+    </div>
   </div>
 
   <!-- 공지사항 -->
@@ -668,6 +697,51 @@
     }catch(e){ show('promisesMsg','err','저장 실패: '+(e.message||e)); }
   };
 
+  // ===== 디자인 (사이트 색상) =====
+  const THEME_IDS={point:'t-point',bg:'t-bg',card:'t-card',chip:'t-chip',footer:'t-footer'};
+  const THEME_DEFAULT={point:'#1aa457',bg:'#ffffff',card:'#eff8f2',chip:'#dcefe4',footer:'#0f3d2a'};
+  const THEME_PRESETS={
+    green:    THEME_DEFAULT,
+    blue:     {point:'#1f6fc4',bg:'#ffffff',card:'#eef4fb',chip:'#dbe9f7',footer:'#122c47'},
+    brown:    {point:'#a9743a',bg:'#fffdf9',card:'#faf4ea',chip:'#f0e4cf',footer:'#3a2a14'},
+    charcoal: {point:'#b48a3c',bg:'#fafafa',card:'#f3f2ef',chip:'#e7e4dd',footer:'#23272b'}
+  };
+  const themeHexRgb=h=>{const m=/^#?([0-9a-f]{6})$/i.exec(h||'');if(!m)return null;const n=parseInt(m[1],16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255};};
+  const themeDarken=(h,f)=>{const c=themeHexRgb(h);if(!c)return h;const x=v=>Math.round(v*f).toString(16).padStart(2,'0');return '#'+x(c.r)+x(c.g)+x(c.b);};
+  function themeValues(){ const t={}; Object.entries(THEME_IDS).forEach(([k,id])=>t[k]=document.getElementById(id).value); return t; }
+  function setThemeInputs(t){ Object.entries(THEME_IDS).forEach(([k,id])=>{ document.getElementById(id).value=t[k]||THEME_DEFAULT[k]; }); }
+  function previewTheme(t){
+    const r=document.documentElement.style;
+    const c=themeHexRgb(t.point);
+    if(c){ r.setProperty('--green',t.point); r.setProperty('--gold',t.point);
+      r.setProperty('--green-hover',themeDarken(t.point,.82));
+      r.setProperty('--gold-dim',`rgba(${c.r},${c.g},${c.b},.30)`);
+      r.setProperty('--gold-line',`rgba(${c.r},${c.g},${c.b},.16)`); }
+    r.setProperty('--bg',t.bg); r.setProperty('--bg-soft',t.card);
+    r.setProperty('--bg-soft2',t.chip); r.setProperty('--green-deep',t.footer);
+  }
+  Object.values(THEME_IDS).forEach(id=>document.getElementById(id).addEventListener('input',()=>previewTheme(themeValues())));
+  document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{ setThemeInputs(THEME_PRESETS[b.dataset.preset]); previewTheme(themeValues()); });
+  async function loadTheme(){
+    try{
+      const snap=await getDoc(doc(db,'site','theme'));
+      setThemeInputs(snap.exists()?snap.data():THEME_DEFAULT);
+    }catch(e){ setThemeInputs(THEME_DEFAULT); }
+  }
+  document.getElementById('saveThemeBtn').onclick=async()=>{
+    try{
+      await setDoc(doc(db,'site','theme'),{...themeValues(),updatedAt:serverTimestamp()});
+      show('themeMsg','ok','색상이 저장되었습니다. 홈페이지 전체에 반영됩니다.');
+    }catch(e){ show('themeMsg','err','저장 실패: '+(e.message||e)); }
+  };
+  document.getElementById('resetThemeBtn').onclick=async()=>{
+    try{
+      await deleteDoc(doc(db,'site','theme'));
+      setThemeInputs(THEME_DEFAULT); previewTheme(THEME_DEFAULT);
+      show('themeMsg','ok','기본 색상으로 복원되었습니다.');
+    }catch(e){ show('themeMsg','err','복원 실패: '+(e.message||e)); }
+  };
+
   // ===== 운영 실적 =====
   document.getElementById('saveRecordBtn').onclick=async()=>{
     const year=val('r-year'), title=val('r-title'), builder=val('r-builder');
@@ -755,7 +829,7 @@
     autoRegisterMenus().then(loadMenus);                            // 최근 7일 자동 등록 후 목록 표시
     loadNotices(); loadInquiries(); loadHero();
     loadSeasons(); loadInfo(); loadPartners(); loadAbout(); loadHistory();
-    loadServices(); loadRecords(); loadGallery(); loadPageTexts();
+    loadServices(); loadRecords(); loadGallery(); loadPageTexts(); loadTheme();
   }
 </script>
 </body>

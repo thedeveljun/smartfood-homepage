@@ -50,3 +50,48 @@ async function applySiteInfo(){
   }catch(e){ /* 실패 시 기본값 유지 */ }
 }
 applySiteInfo();
+
+// ===== 테마(사이트 색상) 적용 =====
+// 관리자 [디자인] 탭에서 저장한 색상(site/theme)을 CSS 변수로 반영.
+// localStorage 캐시로 재방문 시 깜빡임을 최소화한다.
+function hexToRgb(hex){
+  const m=/^#?([0-9a-f]{6})$/i.exec(hex||''); if(!m) return null;
+  const n=parseInt(m[1],16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};
+}
+function darken(hex,f){
+  const c=hexToRgb(hex); if(!c) return hex;
+  const h=v=>Math.round(v*f).toString(16).padStart(2,'0');
+  return '#'+h(c.r)+h(c.g)+h(c.b);
+}
+function applyTheme(t){
+  const r=document.documentElement.style;
+  const VARS=['--green','--gold','--green-hover','--gold-dim','--gold-line','--bg','--bg-soft','--bg-soft2','--green-deep'];
+  if(!t){ VARS.forEach(k=>r.removeProperty(k)); return; }
+  if(t.point && hexToRgb(t.point)){
+    const c=hexToRgb(t.point);
+    r.setProperty('--green',t.point); r.setProperty('--gold',t.point);
+    r.setProperty('--green-hover',darken(t.point,.82));
+    r.setProperty('--gold-dim',`rgba(${c.r},${c.g},${c.b},.30)`);
+    r.setProperty('--gold-line',`rgba(${c.r},${c.g},${c.b},.16)`);
+  }
+  if(t.bg) r.setProperty('--bg',t.bg);
+  if(t.card) r.setProperty('--bg-soft',t.card);
+  if(t.chip) r.setProperty('--bg-soft2',t.chip);
+  if(t.footer) r.setProperty('--green-deep',t.footer);
+}
+try{ const c=localStorage.getItem('sf-theme'); if(c) applyTheme(JSON.parse(c)); }catch(e){}
+(async function loadTheme(){
+  if(!db) return;
+  try{
+    const { doc, getDoc } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const snap = await getDoc(doc(db,'site','theme'));
+    if(snap.exists()){
+      const t=snap.data(); applyTheme(t);
+      try{ localStorage.setItem('sf-theme',JSON.stringify(t)); }catch(e){}
+    }else{
+      try{ localStorage.removeItem('sf-theme'); }catch(e){}
+      applyTheme(null);
+    }
+  }catch(e){ /* 실패 시 기본/캐시 색상 유지 */ }
+})();
