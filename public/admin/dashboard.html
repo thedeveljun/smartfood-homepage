@@ -292,6 +292,16 @@
         <div class="form-row"><label>아이콘·칩 배경</label><input type="color" id="t-chip" style="height:44px;padding:4px"></div>
       </div>
       <div class="form-row"><label>푸터 배경</label><input type="color" id="t-footer" style="height:44px;padding:4px;max-width:260px"></div>
+      <h3 style="margin-top:20px">부분 색상</h3>
+      <p class="hint" style="margin:-8px 0 12px">특정 영역의 색상을 개별 조정합니다.</p>
+      <div class="form-grid">
+        <div class="form-row"><label>건설사 칩 배경</label><input type="color" id="t-partnerBg" style="height:44px;padding:4px"></div>
+        <div class="form-row"><label>건설사 칩 글자색</label><input type="color" id="t-partnerText" style="height:44px;padding:4px"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>섹션 배경 (견적 문의 띠 등)</label><input type="color" id="t-tint" style="height:44px;padding:4px"></div>
+        <div class="form-row"><label>페이지 상단 배경 (제목 띠)</label><input type="color" id="t-pageHead" style="height:44px;padding:4px"></div>
+      </div>
       <div style="display:flex;gap:10px;margin-top:8px">
         <button class="btn btn-gold" id="saveThemeBtn"><i class="ti ti-check"></i> 색상 저장</button>
         <button class="btn btn-line" id="resetThemeBtn"><i class="ti ti-restore"></i> 기본값 복원</button>
@@ -698,13 +708,18 @@
   };
 
   // ===== 디자인 (사이트 색상) =====
-  const THEME_IDS={point:'t-point',bg:'t-bg',card:'t-card',chip:'t-chip',footer:'t-footer'};
-  const THEME_DEFAULT={point:'#1aa457',bg:'#ffffff',card:'#eff8f2',chip:'#dcefe4',footer:'#0f3d2a'};
+  const THEME_IDS={point:'t-point',bg:'t-bg',card:'t-card',chip:'t-chip',footer:'t-footer',
+                   partnerBg:'t-partnerBg',partnerText:'t-partnerText',tint:'t-tint',pageHead:'t-pageHead'};
+  const THEME_DEFAULT={point:'#1aa457',bg:'#ffffff',card:'#eff8f2',chip:'#dcefe4',footer:'#0f3d2a',
+                       partnerBg:'#e8ebfa',partnerText:'#145a9c',tint:'#ffffff',pageHead:'#f6f0e7'};
   const THEME_PRESETS={
     green:    THEME_DEFAULT,
-    blue:     {point:'#1f6fc4',bg:'#ffffff',card:'#eef4fb',chip:'#dbe9f7',footer:'#122c47'},
-    brown:    {point:'#a9743a',bg:'#fffdf9',card:'#faf4ea',chip:'#f0e4cf',footer:'#3a2a14'},
-    charcoal: {point:'#b48a3c',bg:'#fafafa',card:'#f3f2ef',chip:'#e7e4dd',footer:'#23272b'}
+    blue:     {point:'#1f6fc4',bg:'#ffffff',card:'#eef4fb',chip:'#dbe9f7',footer:'#122c47',
+               partnerBg:'#e3edf9',partnerText:'#12518f',tint:'#ffffff',pageHead:'#eef4fb'},
+    brown:    {point:'#a9743a',bg:'#fffdf9',card:'#faf4ea',chip:'#f0e4cf',footer:'#3a2a14',
+               partnerBg:'#f3e8d8',partnerText:'#7c4f1d',tint:'#fffdf9',pageHead:'#f6ede0'},
+    charcoal: {point:'#b48a3c',bg:'#fafafa',card:'#f3f2ef',chip:'#e7e4dd',footer:'#23272b',
+               partnerBg:'#eceae4',partnerText:'#6b5424',tint:'#fafafa',pageHead:'#f0efec'}
   };
   const themeHexRgb=h=>{const m=/^#?([0-9a-f]{6})$/i.exec(h||'');if(!m)return null;const n=parseInt(m[1],16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255};};
   const themeDarken=(h,f)=>{const c=themeHexRgb(h);if(!c)return h;const x=v=>Math.round(v*f).toString(16).padStart(2,'0');return '#'+x(c.r)+x(c.g)+x(c.b);};
@@ -719,6 +734,12 @@
       r.setProperty('--gold-line',`rgba(${c.r},${c.g},${c.b},.16)`); }
     r.setProperty('--bg',t.bg); r.setProperty('--bg-soft',t.card);
     r.setProperty('--bg-soft2',t.chip); r.setProperty('--green-deep',t.footer);
+    const pc=themeHexRgb(t.partnerText);
+    if(themeHexRgb(t.partnerBg)){ r.setProperty('--partner-bg',t.partnerBg); r.setProperty('--partner-line',themeDarken(t.partnerBg,.9)); }
+    if(pc){ r.setProperty('--partner-text',t.partnerText); r.setProperty('--partner-text-hover',themeDarken(t.partnerText,.72));
+      r.setProperty('--partner-line-hover',`rgba(${pc.r},${pc.g},${pc.b},.45)`); }
+    if(t.tint) r.setProperty('--bg-tint',t.tint);
+    if(t.pageHead) r.setProperty('--page-head-bg',t.pageHead);
   }
   Object.values(THEME_IDS).forEach(id=>document.getElementById(id).addEventListener('input',()=>previewTheme(themeValues())));
   document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{ setThemeInputs(THEME_PRESETS[b.dataset.preset]); previewTheme(themeValues()); });

@@ -65,7 +65,8 @@ function darken(hex,f){
 }
 function applyTheme(t){
   const r=document.documentElement.style;
-  const VARS=['--green','--gold','--green-hover','--gold-dim','--gold-line','--bg','--bg-soft','--bg-soft2','--green-deep'];
+  const VARS=['--green','--gold','--green-hover','--gold-dim','--gold-line','--bg','--bg-soft','--bg-soft2','--green-deep',
+              '--partner-bg','--partner-line','--partner-text','--partner-text-hover','--partner-line-hover','--bg-tint','--page-head-bg'];
   if(!t){ VARS.forEach(k=>r.removeProperty(k)); return; }
   if(t.point && hexToRgb(t.point)){
     const c=hexToRgb(t.point);
@@ -78,6 +79,19 @@ function applyTheme(t){
   if(t.card) r.setProperty('--bg-soft',t.card);
   if(t.chip) r.setProperty('--bg-soft2',t.chip);
   if(t.footer) r.setProperty('--green-deep',t.footer);
+  // 부분 색상: 건설사 칩 배경·글자, 섹션 배경, 페이지 상단 배경
+  if(t.partnerBg && hexToRgb(t.partnerBg)){
+    r.setProperty('--partner-bg',t.partnerBg);
+    r.setProperty('--partner-line',darken(t.partnerBg,.9));
+  }
+  if(t.partnerText && hexToRgb(t.partnerText)){
+    const c=hexToRgb(t.partnerText);
+    r.setProperty('--partner-text',t.partnerText);
+    r.setProperty('--partner-text-hover',darken(t.partnerText,.72));
+    r.setProperty('--partner-line-hover',`rgba(${c.r},${c.g},${c.b},.45)`);
+  }
+  if(t.tint) r.setProperty('--bg-tint',t.tint);
+  if(t.pageHead) r.setProperty('--page-head-bg',t.pageHead);
 }
 try{ const c=localStorage.getItem('sf-theme'); if(c) applyTheme(JSON.parse(c)); }catch(e){}
 (async function loadTheme(){

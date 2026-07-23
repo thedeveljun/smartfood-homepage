@@ -195,8 +195,8 @@ img{max-width:100%;display:block}
 
 /* 거래 건설사 칩 */
 .partners{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.partners span{background:#e8ebfa;border:1px solid #d6dbf4;border-radius:30px;padding:10px 20px;font-size:14.5px;color:var(--text-dim);font-weight:600;transition:.2s}
-.partners span:hover{border-color:#8b93d8;color:#4f57c0;transform:translateY(-2px)}
+.partners span{background:var(--partner-bg,#e8ebfa);border:1px solid var(--partner-line,#d6dbf4);border-radius:30px;padding:10px 20px;font-size:14.5px;color:var(--partner-text,#145a9c);font-weight:600;transition:.2s}
+.partners span:hover{border-color:var(--partner-line-hover,#8b93d8);color:var(--partner-text-hover,#0e4276);transform:translateY(-2px)}
 
 /* 연혁 타임라인 */
 .timeline{list-style:none;padding-left:6px}
@@ -266,7 +266,7 @@ img{max-width:100%;display:block}
 .info-list .ic{color:var(--green);font-size:20px;flex-shrink:0;width:24px}
 
 /* 페이지 헤더 */
-.page-head{padding:43px 0 33px;text-align:center;background:linear-gradient(170deg,#f3ebe0 0%,#f7f2ea 45%,#faf8f4 85%);border-bottom:1px solid var(--gold-line)}
+.page-head{padding:43px 0 33px;text-align:center;background:var(--page-head-bg,linear-gradient(170deg,#f3ebe0 0%,#f7f2ea 45%,#faf8f4 85%));border-bottom:1px solid var(--gold-line)}
 .page-head h1{font-size:34px;color:var(--cream);font-weight:800;margin-bottom:12px}
 .page-head p{color:var(--text-dim)}
 
