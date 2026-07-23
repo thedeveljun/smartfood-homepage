@@ -193,9 +193,12 @@ img{max-width:100%;display:block}
 .record-table{width:100%;border-collapse:collapse;font-size:14px}
 .record-table th{background:var(--bg-soft2);color:var(--green);padding:14px;text-align:left;font-weight:700;font-size:13px}
 .record-table td{padding:14px;border-bottom:1px solid var(--gold-line);color:var(--text-dim)}
+/* 운영 실적 표 — 블루 계열 (회사 개요 표는 제외) */
+.record-table:not(.info-table) th{background:#dbe9f7;color:#155a9e}
+.record-table:not(.info-table) td{border-bottom-color:#d3e4f5}
 .record-table:not(.info-table) tbody tr:nth-child(odd) td{background:#ffffff}   /* 흰색 */
 .record-table:not(.info-table) tbody tr:nth-child(even) td{background:#eef0fb}  /* 연한 인디고 파스텔 */
-.record-table tbody tr:hover td{background:#e6f5ee}
+.record-table:not(.info-table) tbody tr:hover td{background:#e8f1fa}
 /* 회사 개요(키-값) 테이블 */
 .info-table th{background:#f5efe1;color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid #ece4d3}
 .info-table td{color:var(--text-dim)}
