@@ -57,7 +57,6 @@
     <div class="tab" data-tab="inquiry"><i class="ti ti-mail"></i> 견적 문의</div>
     <div class="tab" data-tab="info"><i class="ti ti-building"></i> 회사 정보·오시는 길</div>
     <div class="tab" data-tab="theme"><i class="ti ti-palette"></i> 디자인</div>
-    <div class="tab" data-tab="notice"><i class="ti ti-speakerphone"></i> 공지사항</div>
   </div>
 
   <!-- 식단 등록 -->
@@ -320,18 +319,6 @@
     </div>
   </div>
 
-  <!-- 공지사항 -->
-  <div class="panel" id="panel-notice">
-    <div class="admin-card">
-      <h3>공지사항 작성</h3>
-      <div class="form-row"><label>제목</label><input id="n-title" placeholder="공지 제목"></div>
-      <div class="form-row"><label>내용</label><textarea id="n-body" placeholder="공지 내용"></textarea></div>
-      <button class="btn btn-gold" id="saveNoticeBtn"><i class="ti ti-check"></i> 공지 등록</button>
-      <div class="msg" id="noticeMsg"></div>
-    </div>
-    <div class="admin-card"><h3>등록된 공지</h3><div id="noticeListAdmin"></div></div>
-  </div>
-
   <!-- 문의 내역 -->
   <div class="panel" id="panel-inquiry">
     <div class="admin-card"><h3>견적 문의 내역</h3><div id="inquiryListAdmin"></div></div>
@@ -468,24 +455,6 @@
       show('seasonsMsg','ok',count+'개 이미지가 저장되었습니다. 홈페이지에 바로 반영됩니다.');
     }catch(e){ show('seasonsMsg','err','저장 실패: '+(e.message||e)); }
   };
-
-  // ===== 공지 =====
-  document.getElementById('saveNoticeBtn').onclick=async()=>{
-    const title=val('n-title'), body=val('n-body');
-    if(!title||!body){show('noticeMsg','err','제목과 내용을 입력하세요.');return;}
-    await addDoc(collection(db,'notices'),{title,body,createdAt:serverTimestamp()});
-    show('noticeMsg','ok','공지가 등록되었습니다.');
-    setVal('n-title',''); setVal('n-body','');
-    loadNotices();
-  };
-  async function loadNotices(){
-    const snap=await getDocs(query(collection(db,'notices'),orderBy('createdAt','desc')));
-    document.getElementById('noticeListAdmin').innerHTML=snap.docs.map(d=>{
-      const n=d.data();
-      return `<div class="list-row"><span><b>${n.title}</b><br><span style="color:var(--text-mute);font-size:13px">${n.body}</span></span><span class="del" onclick="delNotice('${d.id}')">삭제</span></div>`;
-    }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 공지가 없습니다.</p>';
-  }
-  window.delNotice=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'notices',id));loadNotices();} };
 
   // ===== 메인화면(히어로) =====
   const heroFile=document.getElementById('h-file');
@@ -882,7 +851,7 @@
     addMenuItem();
     document.getElementById('m-date').value=fmtDate(new Date());   // 날짜 기본값 = 오늘
     autoRegisterMenus().then(loadMenus);                            // 최근 7일 자동 등록 후 목록 표시
-    loadNotices(); loadInquiries(); loadHero();
+    loadInquiries(); loadHero();
     loadSeasons(); loadInfo(); loadPartners(); loadAbout(); loadHistory();
     loadServices(); loadRecords(); loadGallery(); loadPageTexts(); loadTheme();
   }
