@@ -97,7 +97,7 @@ img{max-width:100%;display:block}
 
 /* ===== 카드/그리드 ===== */
 .card{background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:var(--radius);overflow:hidden;transition:.2s}
-.card:hover{border-color:var(--green);box-shadow:0 10px 26px rgba(26,164,87,.13);transform:translateY(-3px)}
+.card:hover{border-color:#8fb8e4;box-shadow:0 10px 26px rgba(31,111,196,.14);transform:translateY(-3px)}
 /* 위생·안전(체크리스트) 카드 : 소프트 틸 */
 .card:has(.check-list){background:#f7f2ea;border-color:#ece4d3}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
