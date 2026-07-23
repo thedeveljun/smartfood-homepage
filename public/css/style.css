@@ -1,4 +1,4 @@
-/* ===== 스마트푸드(주) — 공통 스타일 (차콜 & 웜샌드 에디토리얼 테마) ===== */
+﻿/* ===== 스마트푸드(주) — 공통 스타일 (차콜 & 웜샌드 에디토리얼 테마) ===== */
 :root{
   --bg:#ffffff;          /* 화이트 배경 */
   --bg-soft:#eff8f2;     /* 카드 배경 (소프트 그린 틴트) */
@@ -32,7 +32,7 @@ img{max-width:100%;display:block}
 .section{padding:80px 0}
 .section-label{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:3px;color:var(--accent);margin-bottom:14px;font-weight:800}
 .section-label::before{content:'';width:22px;height:2px;background:var(--accent);border-radius:2px}
-.section-title{font-size:30px;font-weight:700;color:var(--cream);margin-bottom:16px;line-height:1.4}
+.section-title{font-size:27px;font-weight:700;color:var(--cream);margin-bottom:16px;line-height:1.4}
 .section-sub{color:var(--text-dim);margin-bottom:40px;max-width:640px}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:12px 26px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;border:none}
 .btn-gold{background:var(--green);color:#fff}
@@ -297,7 +297,7 @@ img{max-width:100%;display:block}
   .footer-grid{grid-template-columns:1fr}
   .hero{min-height:260px}
   .hero h1{font-size:29px}
-  .section-title{font-size:24px}
+  .section-title{font-size:22px}
 }
 /* 휴대폰 (일반 스마트폰 폭) */
 @media(max-width:600px){
@@ -322,7 +322,7 @@ img{max-width:100%;display:block}
   .hero h1{font-size:26px}
   .hero p{font-size:15px}
   .hero .section-label{font-size:15px;letter-spacing:3px}
-  .section-title{font-size:22px}
+  .section-title{font-size:20px}
   .stat .num{font-size:27px}
   /* 정책 행: 세로 정렬로 전환 */
   .policy-row{flex-direction:column;align-items:flex-start;gap:12px;padding:18px 20px}
