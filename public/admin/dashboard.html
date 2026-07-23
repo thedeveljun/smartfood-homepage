@@ -151,6 +151,8 @@
         <div class="form-row"><label>대표 전화</label><input id="i-tel" placeholder="031-421-8332"></div>
         <div class="form-row"><label>휴대폰</label><input id="i-mobile" placeholder="010-2360-9015"></div>
       </div>
+      <div class="form-row"><label>견적문의 전화 (선택)</label><input id="i-inquiryTel" placeholder="예: 010-1234-5678"></div>
+      <p class="hint" style="margin:-10px 0 14px">입력하면 [견적 문의] 페이지와 메인 하단 전화 버튼에 이 번호가 표시됩니다. 비워두면 대표 전화가 사용됩니다.</p>
       <div class="form-row"><label>카카오톡 채널 URL</label><input id="i-kakao" placeholder="https://pf.kakao.com/..."></div>
       <div class="form-row"><label>주소</label><input id="i-address" placeholder="경기도 안양시 동안구 시민대로 230 B동 609호"></div>
       <div class="form-row"><label>주소 부가 안내 (오시는 길)</label><input id="i-addressNote" placeholder="지하철 4호선 평촌역 인근 (관양동)"></div>
@@ -515,7 +517,7 @@
   };
 
   // ===== 회사 정보 =====
-  const INFO_FIELDS=['name','ceo','tel','mobile','kakao','address','addressNote','hours','bizno','corpno','footerDesc','lat','lng'];
+  const INFO_FIELDS=['name','ceo','tel','mobile','inquiryTel','kakao','address','addressNote','hours','bizno','corpno','footerDesc','lat','lng'];
   async function loadInfo(){
     try{
       const snap=await getDoc(doc(db,'site','info'));

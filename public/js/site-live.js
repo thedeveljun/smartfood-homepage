@@ -14,7 +14,7 @@ async function applySiteInfo(){
     if(!snap.exists()) return;
     const v = snap.data();
     // 값이 입력된 필드만 덮어쓰기
-    ['name','ceo','tel','mobile','kakao','address','addressNote','hours','bizno','corpno','footerDesc']
+    ['name','ceo','tel','mobile','inquiryTel','kakao','address','addressNote','hours','bizno','corpno','footerDesc']
       .forEach(k=>{ if(v[k]) SITE[k]=v[k]; });
     SITE.telRaw = digits(SITE.tel);
     SITE.mobileRaw = digits(SITE.mobile);
@@ -34,6 +34,17 @@ async function applySiteInfo(){
     document.querySelectorAll('[data-site-mobile]').forEach(el=>{
       if(el.tagName==='A') el.href='tel:'+SITE.mobileRaw;
       const t=el.querySelector('[data-site-text]'); (t||el).textContent=SITE.mobile;
+    });
+    // 견적문의 전화 — 별도 번호가 있으면 그 번호, 없으면 대표 전화
+    const iqTel = SITE.inquiryTel || SITE.tel;
+    const iqRaw = digits(iqTel);
+    document.querySelectorAll('[data-site-inquiry-tel]').forEach(el=>{
+      if(el.tagName==='A') el.href='tel:'+iqRaw;
+      el.textContent=iqTel;
+    });
+    document.querySelectorAll('[data-site-inquiry-tel-btn]').forEach(el=>{
+      el.href='tel:'+iqRaw;
+      const t=el.querySelector('span'); if(t) t.textContent=iqTel;
     });
     document.querySelectorAll('[data-site-address]').forEach(el=>el.textContent=SITE.address);
     document.querySelectorAll('[data-site-address-note]').forEach(el=>el.textContent=SITE.addressNote);
