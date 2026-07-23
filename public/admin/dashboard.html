@@ -111,6 +111,12 @@
       <div class="form-row"><label>상단 라벨</label><input id="h-label" placeholder="건설현장 식당 전문기업"></div>
       <div class="form-row"><label>제목 (줄바꿈 그대로 반영)</label><textarea id="h-title" placeholder="신선하고 알찬 식단으로&#10;건강한 현장을 책임집니다"></textarea></div>
       <div class="form-row"><label>부제목</label><input id="h-sub" placeholder="현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영"></div>
+      <p class="hint" style="margin:2px 0 8px">글자 색상 — 배경 사진에 따라 잘 보이는 색으로 조정하세요.</p>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="form-row"><label>상단 라벨 색상</label><input type="color" id="h-labelColor" value="#0e8f60" style="height:40px;padding:4px"></div>
+        <div class="form-row"><label>제목 색상</label><input type="color" id="h-titleColor" value="#13271d" style="height:40px;padding:4px"></div>
+        <div class="form-row"><label>부제목 색상</label><input type="color" id="h-subColor" value="#33413a" style="height:40px;padding:4px"></div>
+      </div>
       <div class="form-row"><label>배경 사진</label>
         <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
           <img id="h-preview" class="thumb" style="width:150px;height:84px" src="../img/hero.jpg" alt="현재 배경 미리보기">
@@ -487,12 +493,19 @@
       if(!snap.exists()) return;
       const h=snap.data();
       setVal('h-label',h.label); setVal('h-title',h.title); setVal('h-sub',h.sub);
+      if(h.labelColor) document.getElementById('h-labelColor').value=h.labelColor;
+      if(h.titleColor) document.getElementById('h-titleColor').value=h.titleColor;
+      if(h.subColor)   document.getElementById('h-subColor').value=h.subColor;
       if(h.imageUrl) document.getElementById('h-preview').src=h.imageUrl;
     }catch(e){ console.warn('메인화면 정보 로드 실패', e); }
   }
   document.getElementById('saveHeroBtn').onclick=async()=>{
     try{
-      const data={label:val('h-label'),title:val('h-title'),sub:val('h-sub'),updatedAt:serverTimestamp()};
+      const data={label:val('h-label'),title:val('h-title'),sub:val('h-sub'),
+        labelColor:document.getElementById('h-labelColor').value,
+        titleColor:document.getElementById('h-titleColor').value,
+        subColor:document.getElementById('h-subColor').value,
+        updatedAt:serverTimestamp()};
       const f=heroFile.files[0];
       if(f){ data.imageUrl=await fileToDataUrl(f); }   // 자동 압축 후 Firestore에 저장
       await setDoc(doc(db,'site','hero'),data,{merge:true});
