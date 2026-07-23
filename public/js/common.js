@@ -10,7 +10,7 @@ const SITE = {
   kakao: "https://pf.kakao.com/_yourchannel",   // 카카오톡 채널 URL로 교체
   address: "경기도 안양시 동안구 시민대로 230 B동 609호",
   addressNote: "지하철 4호선 평촌역 인근 (관양동)",
-  hours: "평일 08:00 ~ 18:00 (상담 가능)",
+  hours: "평일 09:00 ~ 18:00 (상담 가능)",
   bizno: "430-86-00146",
   corpno: "134111-0398409",
   footerDesc: "건설현장 식당 전문기업\n신선하고 알찬 식단으로\n건강한 현장을 책임집니다."
