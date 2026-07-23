@@ -64,7 +64,7 @@ function renderFooter(){
     </div>
     <div class="footer-bottom">
       <span>© 2026 ${SITE.name}. 대표이사 ${SITE.ceo} · 사업자등록번호 ${SITE.bizno}</span>
-      <span>전국 건설현장 식당 운영</span>
+      <span>전국 건설현장 식당 운영 · <a href="admin/" style="opacity:.65"><i class="ti ti-settings" style="font-size:12px"></i> 관리자</a></span>
     </div>
   </div></footer>
   <div class="floating">
