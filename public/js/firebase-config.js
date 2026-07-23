@@ -4,12 +4,12 @@
 // 초기화 실패를 흡수하고 db/auth/storage 를 null 로 내보냅니다.
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBWJMAyJ3zlTC92D-2AvcceGI77WYsvbvg",
+  authDomain: "smartfood-homepage.firebaseapp.com",
+  projectId: "smartfood-homepage",
+  storageBucket: "smartfood-homepage.firebasestorage.app",
+  messagingSenderId: "729603775803",
+  appId: "1:729603775803:web:d172279ad0e5d7494deb1e"
 };
 
 // placeholder(YOUR_...) 값이 하나라도 남아 있으면 "미설정"으로 간주

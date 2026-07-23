@@ -5,18 +5,100 @@
   <div>
     <h2 class="section-title" style="font-size:24px">본사</h2>
     <ul class="info-list">
-      <li><span class="ic"><i class="ti ti-map-pin"></i></span><span>경기도 안양시 동안구 시민대로 230 B동 609호<br><span style="color:var(--text-mute);font-size:13px">지하철 4호선 평촌역 인근 (관양동)</span></span></li>
-      <li><span class="ic"><i class="ti ti-phone"></i></span><a href="tel:0314218332" class="gold">031-421-8332</a></li>
-      <li><span class="ic"><i class="ti ti-device-mobile"></i></span><a href="tel:01023609015" class="gold">010-2360-9015</a></li>
-      <li><span class="ic"><i class="ti ti-clock"></i></span><span>평일 08:00 ~ 18:00 (상담 가능)</span></li>
+      <li><span class="ic"><i class="ti ti-map-pin"></i></span><span><span data-site-address>경기도 안양시 동안구 시민대로 230 B동 609호</span><br><span style="color:var(--text-mute);font-size:13px" data-site-address-note>지하철 4호선 평촌역 인근 (관양동)</span></span></li>
+      <li><span class="ic"><i class="ti ti-phone"></i></span><a href="tel:0314218332" class="gold" data-site-tel>031-421-8332</a></li>
+      <li><span class="ic"><i class="ti ti-device-mobile"></i></span><a href="tel:01023609015" class="gold" data-site-mobile>010-2360-9015</a></li>
+      <li><span class="ic"><i class="ti ti-clock"></i></span><span data-site-hours>평일 08:00 ~ 18:00 (상담 가능)</span></li>
     </ul>
     <a href="contact.html" class="btn btn-gold" style="margin-top:24px"><i class="ti ti-file-text"></i> 견적 문의하기</a>
   </div>
   <div>
-    <div class="map-box"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=126.9520%2C37.3905%2C126.9650%2C37.3990&layer=mapnik&marker=37.3948%2C126.9585" style="width:100%;height:100%;border:0" loading="lazy" title="스마트푸드(주) 위치"></iframe></div>
-    <div style="margin-top:10px;text-align:right"><a class="gold" style="font-size:13px" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener">카카오맵에서 크게 보기 →</a></div>
+    <div class="map-box"><div id="map" title="스마트푸드(주) 위치"></div></div>
+    <div style="margin-top:10px;text-align:right"><a class="gold" style="font-size:13px" href="https://map.kakao.com/link/search/경기도 안양시 동안구 시민대로 230" target="_blank" rel="noopener" data-site-maplink>카카오맵에서 크게 보기 →</a></div>
   </div>
 </div></section>
 <div id="footer-slot"></div>
 <script src="js/common.js"></script><script>mountLayout('location')</script>
+
+<!-- ══════════════ 오시는 길 지도 ══════════════
+  1순위: 네이버 지도 (jungree_app '일감찾기'와 동일)
+         ※ NCP 콘솔의 Maps 애플리케이션에 이 사이트 주소가
+           "Web 서비스 URL"로 등록돼 있어야 인증됩니다.
+  2순위: 인증 실패 시 Leaflet(키 불필요) 지도로 자동 전환
+  관리자 좌표 연동: site-live.js 가 window.__moveMap(lat,lng) 호출
+-->
+<script>
+// 네이버 SDK 규약: 키 인증 실패 시 이 전역 함수가 호출된다.
+window.navermap_authFailure = function () {
+  window.__naverAuthFailed = true;
+  document.dispatchEvent(new Event('naverauthfailed'));
+};
+</script>
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=sb7hkxi9li"></script>
+<script>
+(function () {
+  // 본사 좌표
+  var LAT = 37.3948, LNG = 126.9585, ZOOM = 16;
+  // 마커: 브랜드 그린 핀 + 회사명 캡션 (스타일은 style.css)
+  var PIN = '<div class="sf-nmarker"><div class="sf-pin"><i class="ti ti-building-store"></i></div><div class="sf-pin-caption">스마트푸드(주)</div></div>';
+  var mode = null, map = null, marker = null; // 활성 지도: 'naver' | 'leaflet'
+
+  // 지도 생성 전에 site-live.js 가 좌표를 보내면 보관했다가 생성 후 적용
+  var pending = null;
+  window.__moveMap = function (lat, lng) { pending = [lat, lng]; };
+
+  // ── 네이버 지도 ──
+  function useNaver () {
+    mode = 'naver';
+    var pos = new naver.maps.LatLng(LAT, LNG);
+    map = new naver.maps.Map('map', {
+      center: pos, zoom: ZOOM,
+      scrollWheel: false,          // 페이지 스크롤을 가로채지 않도록
+      mapDataControl: false,
+      zoomControl: true,
+      zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT, style: naver.maps.ZoomControlStyle.SMALL }
+    });
+    marker = new naver.maps.Marker({
+      position: pos, map: map,
+      icon: { content: PIN, anchor: new naver.maps.Point(20, 48) }
+    });
+    window.__moveMap = function (lat, lng) {
+      var p = new naver.maps.LatLng(lat, lng);
+      map.setCenter(p); marker.setPosition(p);
+    };
+    if (pending) { window.__moveMap(pending[0], pending[1]); pending = null; }
+  }
+
+  // ── Leaflet 폴백 (인증 실패 시에만 리소스를 로드) ──
+  function useLeaflet () {
+    if (mode === 'leaflet') return;
+    if (mode === 'naver' && map) { try { map.destroy(); } catch (e) {} }
+    mode = 'leaflet';
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    var js = document.createElement('script');
+    js.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
+    js.onload = function () {
+      document.getElementById('map').innerHTML = '';
+      map = L.map('map', { scrollWheelZoom: false, attributionControl: false }).setView([LAT, LNG], ZOOM);
+      L.control.attribution({ prefix: false }).addAttribution('&copy; OpenStreetMap &copy; CARTO').addTo(map);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+      marker = L.marker([LAT, LNG], {
+        icon: L.divIcon({ className: 'sf-pin-icon', html: PIN, iconSize: [40, 66], iconAnchor: [20, 48] })
+      }).addTo(map);
+      window.__moveMap = function (lat, lng) { map.setView([lat, lng], ZOOM); marker.setLatLng([lat, lng]); };
+      if (pending) { window.__moveMap(pending[0], pending[1]); pending = null; }
+    };
+    document.body.appendChild(js);
+  }
+
+  // ── 시작 ──
+  document.addEventListener('naverauthfailed', useLeaflet); // 인증 실패가 나중에 도착하는 경우
+  if (window.__naverAuthFailed || !(window.naver && naver.maps)) useLeaflet(); // 이미 실패했거나 SDK 로드 실패
+  else useNaver();
+})();
+</script>
+<script type="module" src="js/site-live.js"></script>
 </body></html>
