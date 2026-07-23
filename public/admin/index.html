@@ -20,12 +20,13 @@
     <div class="form-row"><label>비밀번호</label><input id="password" type="password" placeholder="••••••••"></div>
     <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:8px" id="loginBtn"><i class="ti ti-login"></i> 로그인</button>
     <div class="msg" id="msg"></div>
-    <p style="text-align:center;margin-top:20px"><a href="../index.html" class="gold" style="font-size:13px"><i class="ti ti-arrow-left"></i> 홈페이지로</a></p>
+    <p style="text-align:center;margin-top:16px"><a href="#" class="gold" style="font-size:13px" id="resetBtn">비밀번호를 잊으셨나요?</a></p>
+    <p style="text-align:center;margin-top:10px"><a href="../index.html" class="gold" style="font-size:13px"><i class="ti ti-arrow-left"></i> 홈페이지로</a></p>
   </div>
 </div>
 <script type="module">
   import { auth } from '../js/firebase-config.js';
-  import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   onAuthStateChanged(auth, u=>{ if(u) location.href='dashboard.html'; });
 
@@ -44,6 +45,22 @@
     }
   });
   document.getElementById('password').addEventListener('keydown',e=>{ if(e.key==='Enter')btn.click(); });
+
+  // 비밀번호 재설정 — 입력한 이메일로 재설정 링크 발송
+  document.getElementById('resetBtn').addEventListener('click', async e=>{
+    e.preventDefault();
+    const email=document.getElementById('email').value.trim();
+    if(!email){ msg.className='msg err'; msg.textContent='이메일을 먼저 입력한 뒤 다시 눌러주세요.'; return; }
+    try{
+      await sendPasswordResetEmail(auth,email);
+      msg.className='msg ok'; msg.textContent='재설정 메일을 보냈습니다. 메일함(스팸함 포함)을 확인하세요.';
+    }catch(err){
+      msg.className='msg err';
+      msg.textContent = err.code==='auth/user-not-found' ? '등록되지 않은 이메일입니다.'
+                      : err.code==='auth/invalid-email' ? '이메일 형식이 올바르지 않습니다.'
+                      : '메일 발송에 실패했습니다. 잠시 후 다시 시도하세요.';
+    }
+  });
 </script>
 </body>
 </html>
