@@ -95,30 +95,29 @@
     box.innerHTML = `<div class="menu-date">${date} · ${mealType||'중식'}</div><div class="menu-items">${list}</div>`;
   }
 
-  // Firebase 미설정 시 보여줄 예시 식단
-  function showSampleMenu(box){
-    renderMenu(box, todayStr()+' (예시)', '중식',
-      ['현미밥','된장찌개','제육볶음','계란말이','시금치나물','배추김치','제철 과일']);
+  // 자동 구성 식단 표시 (등록된 식단이 없는 날 — common.js autoMenu 사용)
+  function showAutoMenu(box){
+    renderMenu(box, todayStr(), '중식', autoMenu(todayStr()));
     const note = document.createElement('div');
     note.className = 'menu-note';
-    note.textContent = '※ 예시 식단입니다. 관리자에서 식단을 등록하면 실제 식단이 표시됩니다.';
+    note.textContent = '※ 현장 상황에 따라 실제 식단은 일부 변경될 수 있습니다.';
     box.appendChild(note);
   }
 
-  // 오늘의 식단 (Firestore: menus 컬렉션에서 오늘 날짜 식단만 표시)
+  // 오늘의 식단 — 관리자가 등록한 오늘 식단이 있으면 우선, 없으면 자동 구성 식단
   async function loadTodayMenu(){
     const box = document.getElementById('todayMenu');
-    if(!db){ showSampleMenu(box); return; }   // 미설정/초기화 실패 → 예시 식단
+    if(!db){ showAutoMenu(box); return; }
     try{
       const { collection, query, where, getDocs } =
         await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
       const q = query(collection(db,'menus'), where('date','==',todayStr()));
       const snap = await getDocs(q);
-      if(snap.empty){ box.innerHTML='<div class="menu-date">오늘 등록된 식단이 없습니다.</div>'; return; }
+      if(snap.empty){ showAutoMenu(box); return; }
       const m = snap.docs[0].data();
       renderMenu(box, m.date, m.mealType, m.items);
     }catch(e){
-      box.innerHTML='<div class="menu-date">식단 정보를 불러올 수 없습니다. (Firebase 설정 확인)</div>';
+      showAutoMenu(box);   // 네트워크 등 실패 시에도 자동 식단으로 표시
     }
   }
 
@@ -155,9 +154,32 @@
     }catch(e){ /* 실패 시 기본 목록 유지 */ }
   }
 
+  // 메인 문구 — 관리자 [메인화면 > 메인 페이지 문구] 저장값 반영 (선택하는 이유·운영 절차)
+  async function loadHomeTexts(){
+    if(!db) return;
+    try{
+      const { doc, getDoc } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const rIcons=['ti-leaf','ti-award','ti-clock-hour-4','ti-shield-check'];
+      const rSnap = await getDoc(doc(db,'site','reasons'));
+      if(rSnap.exists() && (rSnap.data().items||[]).length){
+        document.querySelector('.reason-list').innerHTML = rSnap.data().items.map((it,i)=>
+          `<div class="reason-item"><div class="ic"><i class="ti ${rIcons[i%rIcons.length]}"></i></div><div class="reason-tx"><h3>${esc(it.title)}</h3><p>${esc(it.desc)}</p></div></div>`).join('');
+      }
+      const pIcons=['ti-message-2','ti-map-search','ti-file-text','ti-writing-sign','ti-tools','ti-soup'];
+      const pSnap = await getDoc(doc(db,'site','process'));
+      if(pSnap.exists() && (pSnap.data().items||[]).length){
+        document.querySelector('.process').innerHTML = pSnap.data().items.map((it,i)=>
+          `<div class="step"><span class="step-no">${String(i+1).padStart(2,'0')}</span><div class="step-ic"><i class="ti ${pIcons[i%pIcons.length]}"></i></div><h4>${esc(it.title)}</h4><p>${esc(it.desc)}</p></div>`).join('');
+      }
+    }catch(e){ /* 실패 시 기본 문구 유지 */ }
+  }
+
   loadTodayMenu();
   loadHero();
   loadPartners();
+  loadHomeTexts();
 </script>
 <script type="module" src="js/site-live.js"></script>
 </body>

@@ -51,7 +51,7 @@
     <div class="tab" data-tab="hero"><i class="ti ti-photo"></i> 메인화면</div>
     <div class="tab" data-tab="info"><i class="ti ti-building"></i> 회사 정보</div>
     <div class="tab" data-tab="about"><i class="ti ti-id-badge"></i> 회사소개</div>
-    <div class="tab" data-tab="services"><i class="ti ti-tools-kitchen-2"></i> 서비스 사진</div>
+    <div class="tab" data-tab="services"><i class="ti ti-tools-kitchen-2"></i> 서비스</div>
     <div class="tab" data-tab="records"><i class="ti ti-chart-bar"></i> 운영 실적</div>
     <div class="tab" data-tab="gallery"><i class="ti ti-camera"></i> 현장 사진</div>
     <div class="tab" data-tab="notice"><i class="ti ti-speakerphone"></i> 공지사항</div>
@@ -69,9 +69,11 @@
       <div class="form-row"><label>메뉴 항목</label>
         <div id="m-items"></div>
         <button onclick="addMenuItem()" class="add-btn"><i class="ti ti-plus"></i> 항목 추가</button>
+        <button onclick="fillAutoMenu()" class="add-btn"><i class="ti ti-wand"></i> 자동 구성 불러오기</button>
       </div>
       <button class="btn btn-gold" id="saveMenuBtn"><i class="ti ti-check"></i> 식단 저장</button>
       <div class="msg" id="menuMsg"></div>
+      <p class="hint">날짜가 바뀌면 그날의 식단이 자동으로 구성·등록됩니다(대시보드 접속 시 최근 7일 자동 채움). 특정 날짜의 식단을 직접 바꾸려면 해당 날짜의 자동 식단을 삭제 후 새로 저장하세요.</p>
     </div>
     <div class="admin-card"><h3>등록된 식단</h3><div id="menuListAdmin"></div></div>
   </div>
@@ -116,6 +118,15 @@
       </div>
       <button class="btn btn-gold" id="saveHeroBtn"><i class="ti ti-check"></i> 메인화면 저장</button>
       <div class="msg" id="heroMsg"></div>
+    </div>
+    <div class="admin-card">
+      <h3>메인 페이지 문구</h3>
+      <p class="hint" style="margin:-8px 0 10px">스마트푸드를 선택하는 이유 (제목 / 설명)</p>
+      <div id="reasons-box"></div>
+      <p class="hint" style="margin:16px 0 10px">현장식당 운영 절차 (단계 제목 / 설명)</p>
+      <div id="process-box"></div>
+      <button class="btn btn-gold" id="saveHomeTextsBtn" style="margin-top:12px"><i class="ti ti-check"></i> 메인 문구 저장</button>
+      <div class="msg" id="homeTextsMsg"></div>
     </div>
   </div>
 
@@ -190,6 +201,12 @@
       <div style="margin-top:14px"><button class="btn btn-gold" id="saveHistoryBtn"><i class="ti ti-check"></i> 연혁 저장</button></div>
       <div class="msg" id="historyMsg"></div>
     </div>
+    <div class="admin-card">
+      <h3>우리의 약속 <span class="hint" style="font-weight:400">— 회사소개 하단 3개 카드</span></h3>
+      <div id="promise-box"></div>
+      <button class="btn btn-gold" id="savePromisesBtn" style="margin-top:12px"><i class="ti ti-check"></i> 약속 저장</button>
+      <div class="msg" id="promisesMsg"></div>
+    </div>
   </div>
 
   <!-- 서비스 사진 -->
@@ -203,6 +220,19 @@
       </div>
       <button class="btn btn-gold" id="saveServicesBtn"><i class="ti ti-check"></i> 선택한 사진 저장</button>
       <div class="msg" id="servicesMsg"></div>
+    </div>
+    <div class="admin-card">
+      <h3>서비스 페이지 문구</h3>
+      <p class="hint" style="margin:-8px 0 10px">사업 분야 (제목 / 설명)</p>
+      <div id="biz-box"></div>
+      <p class="hint" style="margin:16px 0 10px">3대 서비스 정책 (구분 / 항목 — 항목은 쉼표(,)로 구분)</p>
+      <div id="policy-box"></div>
+      <p class="hint" style="margin:16px 0 10px">급식 운영방안 (구분 / 설명)</p>
+      <div id="meals-box"></div>
+      <p class="hint" style="margin:16px 0 10px">위생 관리계획 (구분 / 항목 — 항목은 쉼표(,)로 구분)</p>
+      <div id="hygiene-box"></div>
+      <button class="btn btn-gold" id="saveSvcTextsBtn" style="margin-top:12px"><i class="ti ti-check"></i> 서비스 문구 저장</button>
+      <div class="msg" id="svcTextsMsg"></div>
     </div>
   </div>
 
@@ -259,10 +289,11 @@
   </div>
 </div>
 
+<script src="../js/common.js"></script>
 <script type="module">
   import { db, auth, storage } from '../js/firebase-config.js';
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, getDoc, setDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, getDoc, setDoc, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // 인증 가드
   onAuthStateChanged(auth, u=>{ if(!u) location.href='index.html'; else init(); });
@@ -298,12 +329,33 @@
   }
 
   // ===== 식단 =====
+  const fmtDate=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   window.addMenuItem=(val='')=>{
     const div=document.createElement('div'); div.className='item-input-row';
     div.innerHTML=`<input class="menu-item-input" placeholder="예: 제육볶음"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
     div.querySelector('input').value=val;
     document.getElementById('m-items').appendChild(div);
   };
+  // 선택한 날짜의 자동 구성 식단을 입력란에 채움 (common.js autoMenu)
+  window.fillAutoMenu=()=>{
+    const date=val('m-date')||fmtDate(new Date());
+    document.getElementById('m-items').innerHTML='';
+    autoMenu(date).forEach(i=>addMenuItem(i));
+  };
+  // 날짜가 바뀌어도 식단이 자동으로 나타나도록:
+  // 지난 7일 ~ 앞으로 30일 범위에서 미등록 날짜를 자동 구성으로 미리 등록해 둔다.
+  // (대시보드에 접속할 때마다 30일 선등록 버퍼가 유지됨)
+  async function autoRegisterMenus(){
+    try{
+      const dates=[];
+      for(let i=-7;i<=30;i++){ const d=new Date(); d.setDate(d.getDate()+i); dates.push(fmtDate(d)); }
+      const snap=await getDocs(collection(db,'menus'));
+      const have=new Set(snap.docs.map(d=>d.data().date));
+      for(const ds of dates){
+        if(!have.has(ds)) await addDoc(collection(db,'menus'),{date:ds,mealType:'중식',items:autoMenu(ds),auto:true,createdAt:serverTimestamp()});
+      }
+    }catch(e){ console.warn('자동 식단 등록 실패', e); }
+  }
   document.getElementById('saveMenuBtn').onclick=async()=>{
     const date=val('m-date');
     const items=[...document.querySelectorAll('.menu-item-input')].map(i=>i.value.trim()).filter(Boolean);
@@ -317,7 +369,7 @@
     const snap=await getDocs(query(collection(db,'menus'),orderBy('date','desc')));
     document.getElementById('menuListAdmin').innerHTML=snap.docs.map(d=>{
       const m=d.data();
-      return `<div class="list-row"><span><b>${m.date}</b> · ${m.mealType} <span style="color:var(--text-mute)">${(m.items||[]).join(', ')}</span></span><span class="del" onclick="delMenu('${d.id}')">삭제</span></div>`;
+      return `<div class="list-row"><span><b>${m.date}</b> · ${m.mealType} ${m.auto?'<span class="badge">자동</span>':''} <span style="color:var(--text-mute)">${(m.items||[]).join(', ')}</span></span><span class="del" onclick="delMenu('${d.id}')">삭제</span></div>`;
     }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 식단이 없습니다.</p>';
   }
   window.delMenu=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'menus',id));loadMenus();} };
@@ -517,6 +569,105 @@
     }catch(e){ show('servicesMsg','err','저장 실패: '+(e.message||e)); }
   };
 
+  // ===== 페이지 문구 (메인 이유·절차 / 서비스 문구 / 우리의 약속) =====
+  const escAttr=s=>String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const TEXT_DEFAULTS={
+    reasons:[
+      {title:'신선한 식자재 직접 검수',desc:'매일 입고되는 야채·식자재를 직접 검수하여 신선하고 알찬 식단만 제공합니다.'},
+      {title:'검증된 운영 실적',desc:'DL이앤씨·현대ENG·포스코·롯데 등 주요 건설사 현장에서 운영 경험을 쌓았습니다.'},
+      {title:'신속한 현장 구축',desc:'전국 어느 현장이든 조리시설부터 운영까지 빠르게 식당 시스템을 구축합니다.'},
+      {title:'철저한 위생·안전관리',desc:'시설·직원 위생 점검, 식자재 검수, 안전교육으로 안심할 수 있는 식사를 보장합니다.'}
+    ],
+    process:[
+      {title:'상담·문의',desc:'전화 또는 온라인으로 현장 정보를 남겨 주세요.'},
+      {title:'현장 실사',desc:'식수·여건을 파악해 운영 방식을 검토합니다.'},
+      {title:'맞춤 견적',desc:'현장에 최적화된 단가와 식단을 제안합니다.'},
+      {title:'계약 체결',desc:'운영 조건을 확정하고 계약을 진행합니다.'},
+      {title:'식당 구축',desc:'조리시설과 좌석 등 식당을 신속히 구축합니다.'},
+      {title:'식단 운영',desc:'검수·조리·위생관리로 매일 식사를 제공합니다.'}
+    ],
+    promises:[
+      {title:'신선한 식자재',desc:'매일 검수한 신선한 재료로 알찬 식단을 제공합니다.'},
+      {title:'철저한 위생',desc:'시설·직원 위생 점검과 정기 건강검진을 실시합니다.'},
+      {title:'정성과 신뢰',desc:'주요 건설사와의 장기 운영으로 증명된 신뢰입니다.'}
+    ],
+    biz:[
+      {title:'현장식당',desc:'건설현장 내 조리시설을 구축하고 직영으로 운영합니다. 갓 조리한 따뜻한 식사를 매일 제공합니다.'},
+      {title:'구내식당',desc:'사업장·기업 구내식당을 위탁 운영하여 임직원에게 균형 잡힌 식사를 제공합니다.'},
+      {title:'캐더링',desc:'행사·연회 등 다양한 규모의 단체 급식을 신속하고 위생적으로 제공합니다.'}
+    ],
+    policy:[
+      {head:'경영방침',items:['고객 신뢰','최고의 품질','위생 청결']},
+      {head:'고객서비스',items:['최고의 맛','다양한 메뉴','친절한 서비스']},
+      {head:'위생관리시스템',items:['직원 위생 주기적 교육','식품 유통기한 철저 검수','시설물 청결 유지']}
+    ],
+    meals:[
+      {title:'조식',desc:'부드러운 메뉴 중심 (빵·우유·음료 추가 제공)'},
+      {title:'중식',desc:'고열량·고단백 위주의 든든한 식단'},
+      {title:'석식',desc:'단일 음식 위주의 식단 (동태탕·갈비탕·육개장 등)'},
+      {title:'간식',desc:'라면·국수·빵·우유 등 현장 맞춤 간식 제공'}
+    ],
+    hygiene:[
+      {head:'시설위생',items:['매일 저장고·냉장고 청소 및 식자재 검수','수저·젓가락·도마·주방용품 매일 소독','주방 청결 및 주변 정리·청소']},
+      {head:'직원위생',items:['매일 시작 전 직원 위생상태 체크','위생모·마스크·1회용 장갑 착용','매주 위생교육 및 6개월마다 건강검진']},
+      {head:'식품취급 관리',items:['유통기한 주기적 점검 및 관리','신선한 야채 사용, 음식물 재사용 금지','저장고 동절기 3일·하절기 당일 수시 점검']},
+      {head:'안전관리',items:['안전사고 예방교육 매일 실시 (화재·가스·감전)','소화기 비치 및 점검','책임보험 가입 (화재·일반음식물)']}
+    ]
+  };
+  function pairRows(boxId,items){
+    document.getElementById(boxId).innerHTML=items.map(it=>
+      `<div class="item-input-row"><input class="pr-t" placeholder="제목" value="${escAttr(it.title)}" style="flex:0 0 170px"><input class="pr-d" placeholder="설명" value="${escAttr(it.desc)}"></div>`).join('');
+  }
+  function listRows(boxId,items){
+    document.getElementById(boxId).innerHTML=items.map(it=>
+      `<div class="item-input-row"><input class="pr-t" placeholder="구분" value="${escAttr(it.head)}" style="flex:0 0 170px"><input class="pr-d" placeholder="항목 (쉼표로 구분)" value="${escAttr((it.items||[]).join(', '))}"></div>`).join('');
+  }
+  const collectPairs=boxId=>[...document.querySelectorAll('#'+boxId+' .item-input-row')]
+    .map(r=>({title:r.querySelector('.pr-t').value.trim(),desc:r.querySelector('.pr-d').value.trim()}))
+    .filter(x=>x.title);
+  const collectLists=boxId=>[...document.querySelectorAll('#'+boxId+' .item-input-row')]
+    .map(r=>({head:r.querySelector('.pr-t').value.trim(),items:r.querySelector('.pr-d').value.split(',').map(x=>x.trim()).filter(Boolean)}))
+    .filter(x=>x.head);
+  async function loadPageTexts(){
+    try{
+      const [rs,ps,pr,sv]=await Promise.all([
+        getDoc(doc(db,'site','reasons')), getDoc(doc(db,'site','process')),
+        getDoc(doc(db,'site','promises')), getDoc(doc(db,'site','services'))
+      ]);
+      const items=(snap,key,def)=>{ const v=snap.exists()?(snap.data()[key]||[]):[]; return v.length?v:def; };
+      pairRows('reasons-box', items(rs,'items',TEXT_DEFAULTS.reasons));
+      pairRows('process-box', items(ps,'items',TEXT_DEFAULTS.process));
+      pairRows('promise-box', items(pr,'items',TEXT_DEFAULTS.promises));
+      pairRows('biz-box',     items(sv,'biz',TEXT_DEFAULTS.biz));
+      listRows('policy-box',  items(sv,'policy',TEXT_DEFAULTS.policy));
+      pairRows('meals-box',   items(sv,'meals',TEXT_DEFAULTS.meals));
+      listRows('hygiene-box', items(sv,'hygiene',TEXT_DEFAULTS.hygiene));
+    }catch(e){ console.warn('페이지 문구 로드 실패', e); }
+  }
+  document.getElementById('saveHomeTextsBtn').onclick=async()=>{
+    try{
+      await setDoc(doc(db,'site','reasons'),{items:collectPairs('reasons-box'),updatedAt:serverTimestamp()},{merge:true});
+      await setDoc(doc(db,'site','process'),{items:collectPairs('process-box'),updatedAt:serverTimestamp()},{merge:true});
+      show('homeTextsMsg','ok','메인 문구가 저장되었습니다. 홈페이지에 바로 반영됩니다.');
+    }catch(e){ show('homeTextsMsg','err','저장 실패: '+(e.message||e)); }
+  };
+  document.getElementById('saveSvcTextsBtn').onclick=async()=>{
+    try{
+      await setDoc(doc(db,'site','services'),{
+        biz:collectPairs('biz-box'), policy:collectLists('policy-box'),
+        meals:collectPairs('meals-box'), hygiene:collectLists('hygiene-box'),
+        updatedAt:serverTimestamp()
+      },{merge:true});
+      show('svcTextsMsg','ok','서비스 문구가 저장되었습니다.');
+    }catch(e){ show('svcTextsMsg','err','저장 실패: '+(e.message||e)); }
+  };
+  document.getElementById('savePromisesBtn').onclick=async()=>{
+    try{
+      await setDoc(doc(db,'site','promises'),{items:collectPairs('promise-box'),updatedAt:serverTimestamp()},{merge:true});
+      show('promisesMsg','ok','우리의 약속이 저장되었습니다.');
+    }catch(e){ show('promisesMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
   // ===== 운영 실적 =====
   document.getElementById('saveRecordBtn').onclick=async()=>{
     const year=val('r-year'), title=val('r-title'), builder=val('r-builder');
@@ -561,7 +712,9 @@
     const snap=await getDocs(query(collection(db,'gallery'),orderBy('createdAt','desc')));
     document.getElementById('galleryListAdmin').innerHTML=snap.docs.map(d=>{
       const g=d.data();
-      return `<div class="g-admin-item"><img src="${g.url}" alt="" loading="lazy">
+      // 정적 이미지(상대 경로)는 admin 폴더 기준으로 보정
+      const src=/^https?:/.test(g.url)?g.url:'../'+g.url;
+      return `<div class="g-admin-item"><img src="${src}" alt="" loading="lazy">
         <div class="cap"><span>${g.caption||''}</span>
         <span style="white-space:nowrap"><span class="edit-link" onclick="editCaption('${d.id}')">수정</span><span class="del" onclick="delGallery('${d.id}')">삭제</span></span></div></div>`;
     }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 사진이 없습니다. (홈페이지에는 기본 갤러리가 표시됩니다)</p>';
@@ -598,9 +751,11 @@
 
   function init(){
     addMenuItem();
-    loadMenus(); loadNotices(); loadInquiries(); loadHero();
+    document.getElementById('m-date').value=fmtDate(new Date());   // 날짜 기본값 = 오늘
+    autoRegisterMenus().then(loadMenus);                            // 최근 7일 자동 등록 후 목록 표시
+    loadNotices(); loadInquiries(); loadHero();
     loadSeasons(); loadInfo(); loadPartners(); loadAbout(); loadHistory();
-    loadServices(); loadRecords(); loadGallery();
+    loadServices(); loadRecords(); loadGallery(); loadPageTexts();
   }
 </script>
 </body>

@@ -46,7 +46,7 @@
 <!-- 급식 운영방안 -->
 <section class="section" style="padding-top:0"><div class="container">
   <h2 class="section-title">급식 운영방안</h2>
-  <div class="card reason-list indigo" style="margin-top:30px">
+  <div class="card reason-list indigo" style="margin-top:30px" id="mealsList">
     <div class="reason-item"><div class="ic"><i class="ti ti-coffee"></i></div><div class="reason-tx"><h3>조식</h3><p>부드러운 메뉴 중심 (빵·우유·음료 추가 제공)</p></div></div>
     <div class="reason-item"><div class="ic"><i class="ti ti-bowl"></i></div><div class="reason-tx"><h3>중식</h3><p>고열량·고단백 위주의 든든한 식단</p></div></div>
     <div class="reason-item"><div class="ic"><i class="ti ti-soup"></i></div><div class="reason-tx"><h3>석식</h3><p>단일 음식 위주의 식단 (동태탕·갈비탕·육개장 등)</p></div></div>
@@ -57,7 +57,7 @@
 <!-- 위생 관리계획 -->
 <section class="section" style="padding-top:0;background:var(--bg-tint)"><div class="container">
   <h2 class="section-title">위생 관리계획</h2>
-  <div class="grid-2" style="margin-top:30px;align-items:start">
+  <div class="grid-2" style="margin-top:30px;align-items:start" id="hygieneGrid">
     <div class="card" style="padding:28px">
       <h3 style="color:var(--cream);font-size:17px;margin-bottom:14px"><i class="ti ti-building-store gold"></i> 시설위생</h3>
       <ul class="check-list">
@@ -102,7 +102,7 @@
 <script type="module" src="js/site-live.js"></script>
 <script type="module">
   import { db } from './js/firebase-config.js';
-  // 서비스 사진 — 관리자 [서비스 사진] 저장값 반영
+  // 서비스 사진·문구 — 관리자 [서비스] 탭 저장값 반영
   (async()=>{
     if(!db) return;
     try{
@@ -111,8 +111,35 @@
       const snap = await getDoc(doc(db,'site','services'));
       if(!snap.exists()) return;
       const s = snap.data();
+      const esc = t => String(t??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      // 사업 분야 사진
       document.querySelectorAll('[data-svc]').forEach(img=>{ if(s[img.dataset.svc]) img.src=s[img.dataset.svc]; });
-    }catch(e){ /* 실패 시 기본 사진 유지 */ }
+      // 사업 분야 문구 (사진·아이콘은 유지, 제목·설명만 교체)
+      if(Array.isArray(s.biz) && s.biz.length){
+        document.querySelectorAll('.svc-photo__body').forEach((el,i)=>{
+          const b=s.biz[i]; if(!b) return;
+          el.querySelector('h3').textContent=b.title; el.querySelector('p').textContent=b.desc;
+        });
+      }
+      // 3대 서비스 정책
+      if(Array.isArray(s.policy) && s.policy.length){
+        const icons=['ti-bulb','ti-mood-smile','ti-shield-check'];
+        document.querySelector('.policy').innerHTML = s.policy.map((p,i)=>
+          `<div class="policy-row"><div class="policy-head"><i class="ti ${icons[i%icons.length]} gold"></i> ${esc(p.head)}</div><div class="policy-items">${(p.items||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`).join('');
+      }
+      // 급식 운영방안
+      if(Array.isArray(s.meals) && s.meals.length){
+        const icons=['ti-coffee','ti-bowl','ti-soup','ti-bread'];
+        document.getElementById('mealsList').innerHTML = s.meals.map((m,i)=>
+          `<div class="reason-item"><div class="ic"><i class="ti ${icons[i%icons.length]}"></i></div><div class="reason-tx"><h3>${esc(m.title)}</h3><p>${esc(m.desc)}</p></div></div>`).join('');
+      }
+      // 위생 관리계획
+      if(Array.isArray(s.hygiene) && s.hygiene.length){
+        const icons=['ti-building-store','ti-user-check','ti-checklist','ti-shield-check'];
+        document.getElementById('hygieneGrid').innerHTML = s.hygiene.map((h,i)=>
+          `<div class="card" style="padding:28px"><h3 style="color:var(--cream);font-size:17px;margin-bottom:14px"><i class="ti ${icons[i%icons.length]} gold"></i> ${esc(h.head)}</h3><ul class="check-list">${(h.items||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+      }
+    }catch(e){ /* 실패 시 기본 내용 유지 */ }
   })();
 </script>
 </body></html>

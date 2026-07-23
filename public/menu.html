@@ -111,35 +111,29 @@
     return `<div class="menu-box"><div class="menu-date">${date} · ${mealType||'중식'}</div><div class="menu-items">${list}</div></div>`;
   }
 
-  // Firebase 미설정 시 보여줄 예시 주간 식단
-  function showSampleMenus(list){
-    const sample=[
-      ['현미밥','된장찌개','제육볶음','계란말이','시금치나물','배추김치'],
-      ['잡곡밥','순두부찌개','고등어구이','어묵볶음','콩나물무침','깍두기'],
-      ['백미밥','미역국','닭갈비','감자조림','상추겉절이','포기김치'],
-      ['카레라이스','유부장국','돈까스','마카로니샐러드','단무지','오이피클'],
-      ['현미밥','김치찌개','불고기','두부부침','도라지무침','배추김치'],
-    ];
-    list.innerHTML = sample.map((items,idx)=>menuBox(`예시 식단 ${idx+1}`,'중식',items)).join('')
-      + '<div class="menu-note" style="margin-top:14px">※ 예시 식단입니다. 관리자에서 식단을 등록하면 실제 식단이 표시됩니다.</div>';
-  }
-
+  // 최근 7일 식단 — 날짜별로 관리자가 등록한 식단이 있으면 우선, 없으면 자동 구성(common.js autoMenu)
+  // → 날짜가 바뀌어도 항상 그 날의 식단이 자동으로 나타난다.
   async function loadMenus(){
     const list = document.getElementById('menuList');
-    if(!db){ showSampleMenus(list); return; }   // 미설정/초기화 실패 → 예시 식단
-    try{
-      const { collection, query, orderBy, limit, getDocs } =
-        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-      const q = query(collection(db,'menus'), orderBy('date','desc'), limit(7));
-      const snap = await getDocs(q);
-      if(snap.empty){ list.innerHTML='<div class="menu-box"><div class="menu-date">등록된 식단이 없습니다.</div></div>'; return; }
-      list.innerHTML = snap.docs.map(d=>{
-        const m=d.data();
-        return menuBox(m.date, m.mealType, m.items);
-      }).join('');
-    }catch(e){
-      list.innerHTML='<div class="menu-box"><div class="menu-date">식단 정보를 불러올 수 없습니다. (Firebase 설정 확인)</div></div>';
+    const dates=[];
+    for(let i=0;i<7;i++){
+      const d=new Date(); d.setDate(d.getDate()-i);
+      dates.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
     }
+    const reg={};
+    if(db){
+      try{
+        const { collection, query, where, getDocs } =
+          await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const snap = await getDocs(query(collection(db,'menus'), where('date','in',dates)));
+        snap.docs.forEach(d=>{ const m=d.data(); if(!reg[m.date]) reg[m.date]=m; });
+      }catch(e){ /* 실패 시 자동 구성으로 표시 */ }
+    }
+    list.innerHTML = dates.map(ds=>{
+      const m=reg[ds];
+      return m ? menuBox(m.date, m.mealType, m.items) : menuBox(ds, '중식', autoMenu(ds));
+    }).join('')
+      + '<div class="menu-note" style="margin-top:14px">※ 현장 상황에 따라 실제 식단은 일부 변경될 수 있습니다.</div>';
   }
   // 계절 이미지(주간 식단표·계절 카드) — 관리자 [계절 식단표] 저장값 반영
   async function loadSeasons(){
