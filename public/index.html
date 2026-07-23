@@ -14,10 +14,11 @@
 
 <!-- 히어로 -->
 <section class="hero" id="hero"><div class="container">
-  <p class="section-label" id="heroLabel">건설현장 식당 전문기업</p>
-  <h1 id="heroTitle">신선하고 알찬 식단으로<br>건강한 현장을 책임집니다</h1>
-  <p id="heroSub">현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영</p>
+  <h1 id="heroTitle">신선하고 알찬 식단으로<br>건강한 현장을 책임지겠습니다</h1>
 </div></section>
+
+<!-- 소개 문구 띠 (관리자 [메인화면] > 소개 문구 앞/뒤에서 수정) -->
+<section class="intro-strip"><div class="container"><p id="heroSub">건설현장 식당 전문기업 - 현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영</p></div></section>
 
 <!-- 오늘의 식단 -->
 <section class="section"><div class="container">
@@ -131,16 +132,16 @@
       if(!snap.exists()) return;
       const h = snap.data();
       const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      if(h.label) document.getElementById('heroLabel').textContent = h.label;
       if(h.title) document.getElementById('heroTitle').innerHTML = h.title.split('\n').map(esc).join('<br>');
-      if(h.sub) document.getElementById('heroSub').textContent = h.sub;
+      // 소개 문구 띠 = 앞(라벨) - 뒤(사업 분야) 조합
+      const strip=[h.label,h.sub].filter(Boolean).join(' - ');
+      if(strip) document.getElementById('heroSub').textContent = strip;
       // 글자 색상 (관리자 [메인화면]에서 지정)
       const rs=document.documentElement.style;
-      if(h.labelColor) rs.setProperty('--hero-label-color',h.labelColor);
       if(h.titleColor) rs.setProperty('--hero-title-color',h.titleColor);
       if(h.subColor)   rs.setProperty('--hero-sub-color',h.subColor);
-      if(h.imageUrl) document.getElementById('hero').style.backgroundImage =
-        `linear-gradient(rgba(244,250,245,.22),rgba(244,250,245,.22)),url("${h.imageUrl.replace(/["\\]/g,'')}")`;
+      if(h.imageUrl) document.documentElement.style.setProperty('--hero-img',
+        `linear-gradient(rgba(244,250,245,.14),rgba(244,250,245,.14)),url("${h.imageUrl.replace(/["\\]/g,'')}")`);
     }catch(e){ /* 실패 시 기본 메인화면 유지 */ }
   }
 

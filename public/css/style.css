@@ -73,13 +73,18 @@ img{max-width:100%;display:block}
 .float-kakao{background:#FEE500;color:#3c1e1e}
 
 /* ===== 히어로 ===== */
-.hero{position:relative;display:flex;align-items:center;min-height:306px;padding:41px 0;text-align:center;background:linear-gradient(rgba(244,250,245,.22),rgba(244,250,245,.22)),url('../img/hero.jpg') center 40%/cover no-repeat;background-color:#ffffff;border-bottom:1px solid var(--gold-line)}
-.hero .container{width:100%}
-.hero h1{font-size:44px;font-weight:800;color:var(--hero-title-color,#13271d);line-height:1.4;margin:14px 0;text-shadow:0 1px 2px rgba(255,255,255,.95),0 2px 14px rgba(255,255,255,.8),0 0 26px rgba(255,255,255,.65)}
+.hero{position:relative;display:flex;align-items:flex-start;min-height:306px;padding:26px 0 41px;text-align:center;background-color:#ffffff;border-bottom:1px solid var(--gold-line);overflow:hidden}
+/* 배경 사진은 ::before 레이어에 두고 채도·대비를 보정해 산뜻하게 표시 */
+.hero::before{content:'';position:absolute;inset:0;background:var(--hero-img,linear-gradient(rgba(244,250,245,.14),rgba(244,250,245,.14)),url('../img/hero.jpg'));background-size:cover;background-position:center 40%;background-repeat:no-repeat;filter:saturate(1.2) contrast(1.07) brightness(1.02)}
+.hero .container{width:100%;position:relative}
+.hero h1{font-size:41px;font-weight:800;color:var(--hero-title-color,#ffffff);line-height:1.4;margin:8px 0;text-shadow:0 1px 3px rgba(0,0,0,.55),0 2px 14px rgba(0,0,0,.4),0 0 28px rgba(0,0,0,.3)}
 .hero p{font-size:16px;color:var(--hero-sub-color,#33413a);font-weight:600;margin-bottom:0;text-shadow:0 1px 3px rgba(255,255,255,.95),0 0 14px rgba(255,255,255,.75)}
 .hero .section-label{font-size:18px;letter-spacing:4px;color:var(--hero-label-color,#0e8f60);text-shadow:0 1px 2px rgba(255,255,255,.98),0 2px 12px rgba(255,255,255,.9),0 0 22px rgba(255,255,255,.7)}
 .hero .section-label::before{width:30px;height:3px;background:var(--hero-label-color,#0e8f60)}
 .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+/* 소개 문구 띠 (메인 '오늘의 식단' 위) — 블루 계열 배경 + 프레시 블루 폰트 */
+.intro-strip{background:#e8f1fa;border-bottom:1px solid #d3e4f5;padding:10px 0;text-align:center}
+.intro-strip p{color:var(--hero-sub-color,#1f6fc4);font-weight:700;font-size:20px;letter-spacing:.5px}
 
 /* ===== 통계 바 ===== */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gold-line);border-top:1px solid var(--gold-line);border-bottom:1px solid var(--gold-line)}
@@ -286,7 +291,7 @@ img{max-width:100%;display:block}
   .form-grid,.menu-items{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr}
   .hero{min-height:260px}
-  .hero h1{font-size:32px}
+  .hero h1{font-size:29px}
   .section-title{font-size:24px}
 }
 /* 휴대폰 (일반 스마트폰 폭) */
