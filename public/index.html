@@ -135,7 +135,7 @@
       if(h.title) document.getElementById('heroTitle').innerHTML = h.title.split('\n').map(esc).join('<br>');
       if(h.sub) document.getElementById('heroSub').textContent = h.sub;
       if(h.imageUrl) document.getElementById('hero').style.backgroundImage =
-        `linear-gradient(rgba(244,250,245,.55),rgba(244,250,245,.55)),url("${h.imageUrl.replace(/["\\]/g,'')}")`;
+        `linear-gradient(rgba(244,250,245,.22),rgba(244,250,245,.22)),url("${h.imageUrl.replace(/["\\]/g,'')}")`;
     }catch(e){ /* 실패 시 기본 메인화면 유지 */ }
   }
 
