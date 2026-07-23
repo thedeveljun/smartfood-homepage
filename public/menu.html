@@ -111,12 +111,12 @@
     return `<div class="menu-box"><div class="menu-date">${date} · ${mealType||'중식'}</div><div class="menu-items">${list}</div></div>`;
   }
 
-  // 최근 7일 식단 — 날짜별로 관리자가 등록한 식단이 있으면 우선, 없으면 자동 구성(common.js autoMenu)
+  // 최근 6일 식단 — 날짜별로 관리자가 등록한 식단이 있으면 우선, 없으면 자동 구성(common.js autoMenu)
   // → 날짜가 바뀌어도 항상 그 날의 식단이 자동으로 나타난다.
   async function loadMenus(){
     const list = document.getElementById('menuList');
     const dates=[];
-    for(let i=0;i<7;i++){
+    for(let i=0;i<6;i++){
       const d=new Date(); d.setDate(d.getDate()-i);
       dates.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
     }
