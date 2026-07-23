@@ -5,13 +5,15 @@
 <!-- 대표이사 인사말 -->
 <section class="section"><div class="container grid-2" style="align-items:center;gap:48px">
   <div>
-    <h2 class="section-title">현장의 하루를 여는<br>가장 든든한 한 끼를 책임집니다</h2>
+    <h2 class="section-title" id="greetTitle">현장의 하루를 여는<br>가장 든든한 한 끼를 책임집니다</h2>
+    <div id="greetBody">
     <p style="color:var(--text-dim);margin-bottom:16px">스마트푸드(주)는 2014년 설립 이래 건설현장 식당 한 분야에만 집중해 온 급식 전문기업입니다. 식자재 검수부터 조리·배식·위생관리까지 모든 과정을 표준화된 운영 매뉴얼에 따라 관리하며, 현장마다 달라지는 식수(食數)와 여건에 맞춰 안정적으로 급식 시스템을 구축합니다.</p>
     <p style="color:var(--text-dim);margin-bottom:16px">매일 입고되는 식자재를 직접 검수하고, 조식·중식·석식·간식을 현장 근무 강도에 맞춰 설계하며, 정기 위생교육과 건강검진으로 안전한 식탁을 지킵니다. DL이앤씨·현대엔지니어링·포스코·롯데 등 주요 건설사 현장에서 쌓아 온 운영 경험이 이 체계를 뒷받침합니다.</p>
     <p style="color:var(--text-dim)">저희는 “근로자가 최고의 고객”이라는 원칙 아래, 변함없는 맛과 충분한 영양, 그리고 신뢰할 수 있는 위생을 시스템으로 약속드립니다. 현장의 힘이 되는 한 끼, 스마트푸드가 책임지겠습니다.</p>
-    <p style="color:var(--text-mute);margin-top:18px;font-size:18px">스마트푸드(주) 대표이사 <b style="color:var(--cream);font-size:22px">이 선 유</b></p>
+    </div>
+    <p style="color:var(--text-mute);margin-top:18px;font-size:18px"><span id="greetCompany">스마트푸드(주)</span> 대표이사 <b style="color:var(--cream);font-size:22px" id="greetCeo">이 선 유</b></p>
   </div>
-  <div class="card" style="padding:0;overflow:hidden"><img src="img/sites/about_intro.jpg" alt="스마트푸드 건설현장 식당 운영 모습" style="display:block;width:100%;aspect-ratio:4/3;object-fit:cover"></div>
+  <div class="card" style="padding:0;overflow:hidden"><img id="aboutImg" src="img/sites/about_intro.jpg" alt="스마트푸드 건설현장 식당 운영 모습" style="display:block;width:100%;aspect-ratio:4/3;object-fit:cover"></div>
 </div></section>
 
 <!-- 회사 개요 -->
@@ -20,11 +22,11 @@
   <div class="card" style="padding:0;overflow-x:auto;margin-top:24px;background:#fcfaf4;border-color:#ece4d3">
   <table class="record-table info-table">
     <tbody>
-      <tr><th>회사명</th><td>스마트푸드 주식회사</td><th>대표이사</th><td>이 선 유</td></tr>
-      <tr><th>설립일</th><td>2014년 12월</td><th>자본금</th><td>₩100,000,000</td></tr>
-      <tr><th>임직원 수</th><td>42명</td><th>사업분야</th><td>현장식당 · 구내식당 · 캐더링</td></tr>
-      <tr><th>사업자등록번호</th><td>430-86-00146</td><th>법인등록번호</th><td>134111-0398409</td></tr>
-      <tr><th>소재지</th><td colspan="3">경기도 안양시 동안구 시민대로 230 B동 609호 (관양동)</td></tr>
+      <tr><th>회사명</th><td id="ov-name">스마트푸드 주식회사</td><th>대표이사</th><td id="ov-ceo">이 선 유</td></tr>
+      <tr><th>설립일</th><td id="ov-founded">2014년 12월</td><th>자본금</th><td id="ov-capital">₩100,000,000</td></tr>
+      <tr><th>임직원 수</th><td id="ov-staff">42명</td><th>사업분야</th><td id="ov-fields">현장식당 · 구내식당 · 캐더링</td></tr>
+      <tr><th>사업자등록번호</th><td id="ov-bizno">430-86-00146</td><th>법인등록번호</th><td id="ov-corpno">134111-0398409</td></tr>
+      <tr><th>소재지</th><td colspan="3" id="ov-address">경기도 안양시 동안구 시민대로 230 B동 609호 (관양동)</td></tr>
     </tbody>
   </table></div>
 </div></section>
@@ -32,7 +34,7 @@
 <!-- 회사 연혁 -->
 <section class="section" style="padding-top:0;background:#ffffff"><div class="container">
   <h2 class="section-title">회사 연혁</h2>
-  <ul class="timeline" style="margin-top:30px">
+  <ul class="timeline" style="margin-top:30px" id="historyList">
     <li><span class="t-year">2014. 12</span><span class="t-desc">스마트푸드㈜ 설립 (안양시 동안구 시민대로 230)</span></li>
     <li><span class="t-year">2018. 01</span><span class="t-desc">본사 이전 (용인시 처인구 삼가로 267-3)</span></li>
     <li><span class="t-year">2021. 06</span><span class="t-desc">본점 이전 (안양시 동안구 시민대로 230)</span></li>
@@ -97,4 +99,52 @@
 </div></section>
 <div id="footer-slot"></div>
 <script src="js/common.js"></script><script>mountLayout('about')</script>
+<script type="module" src="js/site-live.js"></script>
+<script type="module">
+  import { db } from './js/firebase-config.js';
+  const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const setText=(id,v)=>{ if(v) document.getElementById(id).textContent=v; };
+
+  async function loadAboutPage(){
+    if(!db) return;
+    try{
+      const { doc, getDoc } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+      // 인사말·개요 (site/about)
+      const aSnap = await getDoc(doc(db,'site','about'));
+      if(aSnap.exists()){
+        const a = aSnap.data();
+        if(a.greetTitle) document.getElementById('greetTitle').innerHTML = a.greetTitle.split('\n').map(esc).join('<br>');
+        if(a.greetBody){
+          const paras = a.greetBody.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+          if(paras.length) document.getElementById('greetBody').innerHTML =
+            paras.map((p,i)=>`<p style="color:var(--text-dim);${i<paras.length-1?'margin-bottom:16px':''}">${esc(p).split('\n').join('<br>')}</p>`).join('');
+        }
+        if(a.imageUrl) document.getElementById('aboutImg').src = a.imageUrl;
+        setText('ov-founded',a.founded); setText('ov-capital',a.capital);
+        setText('ov-staff',a.staff); setText('ov-fields',a.fields);
+      }
+
+      // 회사 정보 (site/info) → 개요 표·서명 반영
+      const iSnap = await getDoc(doc(db,'site','info'));
+      if(iSnap.exists()){
+        const v = iSnap.data();
+        setText('ov-name',v.name); setText('ov-ceo',v.ceo);
+        setText('ov-bizno',v.bizno); setText('ov-corpno',v.corpno);
+        setText('ov-address',v.address);
+        setText('greetCompany',v.name); setText('greetCeo',v.ceo);
+      }
+
+      // 연혁 (site/history)
+      const hSnap = await getDoc(doc(db,'site','history'));
+      if(hSnap.exists()){
+        const items = hSnap.data().items||[];
+        if(items.length) document.getElementById('historyList').innerHTML =
+          items.map(h=>`<li><span class="t-year">${esc(h.year)}</span><span class="t-desc">${esc(h.desc)}</span></li>`).join('');
+      }
+    }catch(e){ /* 실패 시 기본 내용 유지 */ }
+  }
+  loadAboutPage();
+</script>
 </body></html>

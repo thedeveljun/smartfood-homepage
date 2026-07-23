@@ -10,6 +10,21 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
+    // 사이트 설정(메인화면 문구·배경, 회사정보, 소개, 연혁, 건설사, 계절식단표 등): 모두 읽기 가능, 쓰기는 관리자만
+    match /site/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // 운영 실적: 모두 읽기 가능, 쓰기는 관리자만
+    match /records/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // 현장 사진 갤러리(메타데이터): 모두 읽기 가능, 쓰기는 관리자만
+    match /gallery/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
     // 문의: 누구나 생성 가능(단, 필드·길이 검증), 읽기·수정·삭제는 관리자만
     match /inquiries/{id} {
       allow create: if isValidInquiry();

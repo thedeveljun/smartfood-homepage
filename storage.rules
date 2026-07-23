@@ -9,5 +9,13 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
       allow delete: if request.auth != null;
     }
+    // 사이트 설정 이미지(메인화면 배경 등): 규칙은 gallery와 동일
+    match /site/{file} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null;
+    }
   }
 }

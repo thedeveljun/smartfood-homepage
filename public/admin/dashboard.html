@@ -17,11 +17,22 @@
   .admin-card h3{color:var(--cream);font-size:17px;margin-bottom:18px}
   .list-row{display:flex;justify-content:space-between;align-items:center;padding:14px;border:.5px solid var(--gold-line);border-radius:8px;margin-bottom:10px;font-size:14px}
   .del{color:#c0392b;cursor:pointer;font-size:13px}
+  .edit-link{color:var(--gold);cursor:pointer;font-size:13px;margin-right:12px}
   .item-input-row{display:flex;gap:8px;margin-bottom:8px}
   .item-input-row input{flex:1}
   .item-input-row button{background:transparent;border:.5px solid var(--gold-dim);color:var(--text-dim);border-radius:8px;width:42px;cursor:pointer}
   .thumb{width:70px;height:70px;object-fit:cover;border-radius:8px}
   .badge{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--bg-soft2);color:var(--gold)}
+  .add-btn{background:transparent;border:.5px solid var(--gold-dim);color:var(--gold);padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer;margin-top:4px}
+  .img-slot{border:.5px solid var(--gold-line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .img-slot b{font-size:14px;color:var(--cream)}
+  .img-slot img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;background:var(--bg-soft2)}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:16px}
+  .hint{font-size:12px;color:var(--text-mute);margin-top:6px}
+  .g-admin{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+  .g-admin-item{border:.5px solid var(--gold-line);border-radius:10px;overflow:hidden}
+  .g-admin-item img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+  .g-admin-item .cap{padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 </style>
 </head>
 <body>
@@ -36,6 +47,13 @@
 <div class="container" style="padding-top:8px;max-width:900px">
   <div class="tabs">
     <div class="tab active" data-tab="menu"><i class="ti ti-bowl"></i> 식단 등록</div>
+    <div class="tab" data-tab="seasons"><i class="ti ti-calendar"></i> 계절 식단표</div>
+    <div class="tab" data-tab="hero"><i class="ti ti-photo"></i> 메인화면</div>
+    <div class="tab" data-tab="info"><i class="ti ti-building"></i> 회사 정보</div>
+    <div class="tab" data-tab="about"><i class="ti ti-id-badge"></i> 회사소개</div>
+    <div class="tab" data-tab="services"><i class="ti ti-tools-kitchen-2"></i> 서비스 사진</div>
+    <div class="tab" data-tab="records"><i class="ti ti-chart-bar"></i> 운영 실적</div>
+    <div class="tab" data-tab="gallery"><i class="ti ti-camera"></i> 현장 사진</div>
     <div class="tab" data-tab="notice"><i class="ti ti-speakerphone"></i> 공지사항</div>
     <div class="tab" data-tab="inquiry"><i class="ti ti-mail"></i> 문의 내역</div>
   </div>
@@ -50,12 +68,177 @@
       </div>
       <div class="form-row"><label>메뉴 항목</label>
         <div id="m-items"></div>
-        <button onclick="addMenuItem()" style="background:transparent;border:.5px solid var(--gold-dim);color:var(--gold);padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer;margin-top:4px"><i class="ti ti-plus"></i> 항목 추가</button>
+        <button onclick="addMenuItem()" class="add-btn"><i class="ti ti-plus"></i> 항목 추가</button>
       </div>
       <button class="btn btn-gold" id="saveMenuBtn"><i class="ti ti-check"></i> 식단 저장</button>
       <div class="msg" id="menuMsg"></div>
     </div>
     <div class="admin-card"><h3>등록된 식단</h3><div id="menuListAdmin"></div></div>
+  </div>
+
+  <!-- 계절 식단표 (이미지 교체) -->
+  <div class="panel" id="panel-seasons">
+    <div class="admin-card">
+      <h3>계절별 주간 식단표 이미지</h3>
+      <p class="hint" style="margin:-8px 0 14px">[오늘의 식단] 페이지의 계절별 주간 식단표 이미지를 교체합니다. (이미지 파일, 10MB 이하)</p>
+      <div class="img-grid">
+        <div class="img-slot"><b>봄 식단표</b><img id="sn-menuSpring" src="../img/sites/menu_spring.jpg" alt="봄 식단표"><input type="file" accept="image/*" data-season="menuSpring"></div>
+        <div class="img-slot"><b>여름 식단표</b><img id="sn-menuSummer" src="../img/sites/menu_summer.jpg" alt="여름 식단표"><input type="file" accept="image/*" data-season="menuSummer"></div>
+        <div class="img-slot"><b>가을 식단표</b><img id="sn-menuFall" src="../img/sites/menu_fall.jpg" alt="가을 식단표"><input type="file" accept="image/*" data-season="menuFall"></div>
+        <div class="img-slot"><b>겨울 식단표</b><img id="sn-menuWinter" src="../img/sites/menu_winter.jpg" alt="겨울 식단표"><input type="file" accept="image/*" data-season="menuWinter"></div>
+      </div>
+      <h3 style="margin-top:8px">계절별 메뉴 카드 사진</h3>
+      <p class="hint" style="margin:-8px 0 14px">[계절별 메뉴 운영] 카드(봄·여름·가을·겨울)의 사진을 교체합니다.</p>
+      <div class="img-grid">
+        <div class="img-slot"><b>봄 카드</b><img id="sn-cardSpring" src="../img/sites/season_spring.jpg" alt="봄 카드"><input type="file" accept="image/*" data-season="cardSpring"></div>
+        <div class="img-slot"><b>여름 카드</b><img id="sn-cardSummer" src="../img/sites/season_summer.jpg" alt="여름 카드"><input type="file" accept="image/*" data-season="cardSummer"></div>
+        <div class="img-slot"><b>가을 카드</b><img id="sn-cardFall" src="../img/sites/season_fall.jpg" alt="가을 카드"><input type="file" accept="image/*" data-season="cardFall"></div>
+        <div class="img-slot"><b>겨울 카드</b><img id="sn-cardWinter" src="../img/sites/season_winter.jpg" alt="겨울 카드"><input type="file" accept="image/*" data-season="cardWinter"></div>
+      </div>
+      <button class="btn btn-gold" id="saveSeasonsBtn"><i class="ti ti-check"></i> 선택한 이미지 저장</button>
+      <div class="msg" id="seasonsMsg"></div>
+    </div>
+  </div>
+
+  <!-- 메인화면(히어로) 편집 -->
+  <div class="panel" id="panel-hero">
+    <div class="admin-card">
+      <h3>메인화면 편집</h3>
+      <div class="form-row"><label>상단 라벨</label><input id="h-label" placeholder="건설현장 식당 전문기업"></div>
+      <div class="form-row"><label>제목 (줄바꿈 그대로 반영)</label><textarea id="h-title" placeholder="신선하고 알찬 식단으로&#10;건강한 현장을 책임집니다"></textarea></div>
+      <div class="form-row"><label>부제목</label><input id="h-sub" placeholder="현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영"></div>
+      <div class="form-row"><label>배경 사진</label>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+          <img id="h-preview" class="thumb" style="width:150px;height:84px" src="../img/hero.jpg" alt="현재 배경 미리보기">
+          <input type="file" id="h-file" accept="image/*">
+        </div>
+        <p class="hint">사진을 선택하지 않으면 기존 배경이 유지됩니다. (이미지 파일, 10MB 이하)</p>
+      </div>
+      <button class="btn btn-gold" id="saveHeroBtn"><i class="ti ti-check"></i> 메인화면 저장</button>
+      <div class="msg" id="heroMsg"></div>
+    </div>
+  </div>
+
+  <!-- 회사 정보 -->
+  <div class="panel" id="panel-info">
+    <div class="admin-card">
+      <h3>회사 기본 정보 <span class="hint" style="font-weight:400">— 헤더·푸터·연락처·오시는 길에 자동 반영됩니다</span></h3>
+      <div class="form-grid">
+        <div class="form-row"><label>회사명</label><input id="i-name" placeholder="스마트푸드(주)"></div>
+        <div class="form-row"><label>대표이사</label><input id="i-ceo" placeholder="이선유"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>대표 전화</label><input id="i-tel" placeholder="031-421-8332"></div>
+        <div class="form-row"><label>휴대폰</label><input id="i-mobile" placeholder="010-2360-9015"></div>
+      </div>
+      <div class="form-row"><label>카카오톡 채널 URL</label><input id="i-kakao" placeholder="https://pf.kakao.com/..."></div>
+      <div class="form-row"><label>주소</label><input id="i-address" placeholder="경기도 안양시 동안구 시민대로 230 B동 609호"></div>
+      <div class="form-row"><label>주소 부가 안내 (오시는 길)</label><input id="i-addressNote" placeholder="지하철 4호선 평촌역 인근 (관양동)"></div>
+      <div class="form-row"><label>상담 가능 시간</label><input id="i-hours" placeholder="평일 08:00 ~ 18:00 (상담 가능)"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>사업자등록번호</label><input id="i-bizno" placeholder="430-86-00146"></div>
+        <div class="form-row"><label>법인등록번호</label><input id="i-corpno" placeholder="134111-0398409"></div>
+      </div>
+      <div class="form-row"><label>푸터 소개 문구 (줄바꿈 그대로 반영)</label><textarea id="i-footerDesc" placeholder="건설현장 식당 전문기업&#10;신선하고 알찬 식단으로&#10;건강한 현장을 책임집니다."></textarea></div>
+      <div class="form-grid">
+        <div class="form-row"><label>지도 위도 (선택)</label><input id="i-lat" placeholder="37.3948"></div>
+        <div class="form-row"><label>지도 경도 (선택)</label><input id="i-lng" placeholder="126.9585"></div>
+      </div>
+      <p class="hint" style="margin-bottom:14px">위도·경도를 입력하면 [오시는 길] 지도가 해당 위치로 이동합니다. 비워두면 기존 지도가 유지됩니다.</p>
+      <button class="btn btn-gold" id="saveInfoBtn"><i class="ti ti-check"></i> 회사 정보 저장</button>
+      <div class="msg" id="infoMsg"></div>
+    </div>
+    <div class="admin-card">
+      <h3>주요 거래 건설사 <span class="hint" style="font-weight:400">— 메인 페이지에 표시됩니다</span></h3>
+      <div id="p-items"></div>
+      <button onclick="addPartnerItem()" class="add-btn"><i class="ti ti-plus"></i> 건설사 추가</button>
+      <div style="margin-top:14px"><button class="btn btn-gold" id="savePartnersBtn"><i class="ti ti-check"></i> 건설사 목록 저장</button></div>
+      <div class="msg" id="partnersMsg"></div>
+    </div>
+  </div>
+
+  <!-- 회사소개 -->
+  <div class="panel" id="panel-about">
+    <div class="admin-card">
+      <h3>대표이사 인사말</h3>
+      <div class="form-row"><label>제목 (줄바꿈 그대로 반영)</label><textarea id="a-greetTitle" placeholder="현장의 하루를 여는&#10;가장 든든한 한 끼를 책임집니다"></textarea></div>
+      <div class="form-row"><label>본문 (빈 줄로 문단 구분)</label><textarea id="a-greetBody" style="min-height:180px" placeholder="첫 번째 문단...&#10;&#10;두 번째 문단..."></textarea></div>
+      <div class="form-row"><label>소개 사진</label>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+          <img id="a-preview" class="thumb" style="width:150px;height:110px" src="../img/sites/about_intro.jpg" alt="소개 사진 미리보기">
+          <input type="file" id="a-file" accept="image/*">
+        </div>
+        <p class="hint">사진을 선택하지 않으면 기존 사진이 유지됩니다.</p>
+      </div>
+      <h3 style="margin-top:24px">회사 개요</h3>
+      <p class="hint" style="margin:-10px 0 14px">회사명·대표·사업자/법인등록번호·주소는 [회사 정보] 탭에서 수정하면 함께 반영됩니다.</p>
+      <div class="form-grid">
+        <div class="form-row"><label>설립일</label><input id="a-founded" placeholder="2014년 12월"></div>
+        <div class="form-row"><label>자본금</label><input id="a-capital" placeholder="₩100,000,000"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>임직원 수</label><input id="a-staff" placeholder="42명"></div>
+        <div class="form-row"><label>사업분야</label><input id="a-fields" placeholder="현장식당 · 구내식당 · 캐더링"></div>
+      </div>
+      <button class="btn btn-gold" id="saveAboutBtn"><i class="ti ti-check"></i> 회사소개 저장</button>
+      <div class="msg" id="aboutMsg"></div>
+    </div>
+    <div class="admin-card">
+      <h3>회사 연혁</h3>
+      <div id="hist-items"></div>
+      <button onclick="addHistoryItem()" class="add-btn"><i class="ti ti-plus"></i> 연혁 추가</button>
+      <div style="margin-top:14px"><button class="btn btn-gold" id="saveHistoryBtn"><i class="ti ti-check"></i> 연혁 저장</button></div>
+      <div class="msg" id="historyMsg"></div>
+    </div>
+  </div>
+
+  <!-- 서비스 사진 -->
+  <div class="panel" id="panel-services">
+    <div class="admin-card">
+      <h3>서비스 소개 사진 <span class="hint" style="font-weight:400">— [서비스] 페이지 사업 분야 사진</span></h3>
+      <div class="img-grid">
+        <div class="img-slot"><b>현장식당</b><img id="sv-siteImg" src="../img/sites/svc_site.jpg" alt="현장식당"><input type="file" accept="image/*" data-svc="siteImg"></div>
+        <div class="img-slot"><b>구내식당</b><img id="sv-cafeteriaImg" src="../img/sites/svc_cafeteria.jpg" alt="구내식당"><input type="file" accept="image/*" data-svc="cafeteriaImg"></div>
+        <div class="img-slot"><b>캐더링</b><img id="sv-cateringImg" src="../img/sites/svc_catering.jpg" alt="캐더링"><input type="file" accept="image/*" data-svc="cateringImg"></div>
+      </div>
+      <button class="btn btn-gold" id="saveServicesBtn"><i class="ti ti-check"></i> 선택한 사진 저장</button>
+      <div class="msg" id="servicesMsg"></div>
+    </div>
+  </div>
+
+  <!-- 운영 실적 -->
+  <div class="panel" id="panel-records">
+    <div class="admin-card">
+      <h3>운영 실적 등록</h3>
+      <div class="form-grid">
+        <div class="form-row"><label>연도</label><input id="r-year" placeholder="2026"></div>
+        <div class="form-row"><label>현장식당명</label><input id="r-title" placeholder="안양 관양고주변 도시개발사업"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>건설사</label><input id="r-builder" placeholder="DL이앤씨"></div>
+        <div class="form-row"><label>출력인원</label><input id="r-headcount" placeholder="1,200명"></div>
+      </div>
+      <div class="form-row"><label>운영기간</label><input id="r-period" placeholder="2026. 3 ~"></div>
+      <button class="btn btn-gold" id="saveRecordBtn"><i class="ti ti-check"></i> 실적 등록</button>
+      <div class="msg" id="recordMsg"></div>
+      <p class="hint">실적이 1건 이상 등록되면 홈페이지 [운영 실적] 표가 등록된 실적으로 교체됩니다.</p>
+    </div>
+    <div class="admin-card"><h3>등록된 실적</h3><div id="recordListAdmin"></div></div>
+  </div>
+
+  <!-- 현장 사진 (갤러리) -->
+  <div class="panel" id="panel-gallery">
+    <div class="admin-card">
+      <h3>현장 사진 업로드 <span class="hint" style="font-weight:400">— [운영 실적] 페이지 갤러리</span></h3>
+      <div class="form-grid">
+        <div class="form-row"><label>사진 파일</label><input type="file" id="g-file" accept="image/*"></div>
+        <div class="form-row"><label>사진 설명 (캡션)</label><input id="g-caption" placeholder="현장식당 배식 모습"></div>
+      </div>
+      <button class="btn btn-gold" id="saveGalleryBtn"><i class="ti ti-upload"></i> 사진 업로드</button>
+      <div class="msg" id="galleryMsg"></div>
+      <p class="hint">사진이 1장 이상 등록되면 홈페이지 갤러리가 등록된 사진으로 교체됩니다.</p>
+    </div>
+    <div class="admin-card"><h3>등록된 사진</h3><div id="galleryListAdmin" class="g-admin"></div></div>
   </div>
 
   <!-- 공지사항 -->
@@ -77,9 +260,9 @@
 </div>
 
 <script type="module">
-  import { db, auth } from '../js/firebase-config.js';
+  import { db, auth, storage } from '../js/firebase-config.js';
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc, getDoc, setDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // 인증 가드
   onAuthStateChanged(auth, u=>{ if(!u) location.href='index.html'; else init(); });
@@ -93,16 +276,36 @@
     document.getElementById('panel-'+t.dataset.tab).classList.add('active');
   });
 
-  function show(id,type,text){const m=document.getElementById(id);m.className='msg '+type;m.textContent=text;setTimeout(()=>m.className='msg',3000);}
+  function show(id,type,text){const m=document.getElementById(id);m.className='msg '+type;m.textContent=text;setTimeout(()=>m.className='msg',3500);}
+  const val=id=>document.getElementById(id).value.trim();
+  const setVal=(id,v)=>{document.getElementById(id).value=v||'';};
+
+  // 이미지 업로드 공통 (Storage → URL 반환)
+  async function uploadImg(folder, f){
+    if(!storage) throw new Error('Storage가 설정되지 않았습니다.');
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js");
+    const r=ref(storage, folder+'/'+Date.now()+'_'+f.name.replace(/[^\w.\-]/g,''));
+    await uploadBytes(r,f);
+    return { url: await getDownloadURL(r), path: r.fullPath };
+  }
+  async function deleteImg(path){
+    try{
+      const { ref, deleteObject } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js");
+      await deleteObject(ref(storage, path));
+    }catch(e){ /* 파일이 이미 없어도 무시 */ }
+  }
 
   // ===== 식단 =====
   window.addMenuItem=(val='')=>{
     const div=document.createElement('div'); div.className='item-input-row';
-    div.innerHTML=`<input class="menu-item-input" value="${val}" placeholder="예: 제육볶음"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+    div.innerHTML=`<input class="menu-item-input" placeholder="예: 제육볶음"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+    div.querySelector('input').value=val;
     document.getElementById('m-items').appendChild(div);
   };
   document.getElementById('saveMenuBtn').onclick=async()=>{
-    const date=document.getElementById('m-date').value;
+    const date=val('m-date');
     const items=[...document.querySelectorAll('.menu-item-input')].map(i=>i.value.trim()).filter(Boolean);
     if(!date||!items.length){show('menuMsg','err','날짜와 메뉴 항목을 입력하세요.');return;}
     await addDoc(collection(db,'menus'),{date,mealType:document.getElementById('m-type').value,items,createdAt:serverTimestamp()});
@@ -119,14 +322,40 @@
   }
   window.delMenu=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'menus',id));loadMenus();} };
 
+  // ===== 계절 식단표 이미지 =====
+  const SEASON_KEYS=['menuSpring','menuSummer','menuFall','menuWinter','cardSpring','cardSummer','cardFall','cardWinter'];
+  document.querySelectorAll('[data-season]').forEach(inp=>{
+    inp.onchange=()=>{ const f=inp.files[0]; if(f) document.getElementById('sn-'+inp.dataset.season).src=URL.createObjectURL(f); };
+  });
+  async function loadSeasons(){
+    try{
+      const snap=await getDoc(doc(db,'site','seasons'));
+      if(!snap.exists()) return;
+      const s=snap.data();
+      SEASON_KEYS.forEach(k=>{ if(s[k]) document.getElementById('sn-'+k).src=s[k]; });
+    }catch(e){ console.warn('계절 식단표 로드 실패', e); }
+  }
+  document.getElementById('saveSeasonsBtn').onclick=async()=>{
+    try{
+      const data={updatedAt:serverTimestamp()}; let count=0;
+      for(const inp of document.querySelectorAll('[data-season]')){
+        const f=inp.files[0];
+        if(f){ data[inp.dataset.season]=(await uploadImg('site',f)).url; count++; }
+      }
+      if(!count){show('seasonsMsg','err','교체할 이미지를 먼저 선택하세요.');return;}
+      await setDoc(doc(db,'site','seasons'),data,{merge:true});
+      document.querySelectorAll('[data-season]').forEach(i=>i.value='');
+      show('seasonsMsg','ok',count+'개 이미지가 저장되었습니다. 홈페이지에 바로 반영됩니다.');
+    }catch(e){ show('seasonsMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
   // ===== 공지 =====
   document.getElementById('saveNoticeBtn').onclick=async()=>{
-    const title=document.getElementById('n-title').value.trim();
-    const body=document.getElementById('n-body').value.trim();
+    const title=val('n-title'), body=val('n-body');
     if(!title||!body){show('noticeMsg','err','제목과 내용을 입력하세요.');return;}
     await addDoc(collection(db,'notices'),{title,body,createdAt:serverTimestamp()});
     show('noticeMsg','ok','공지가 등록되었습니다.');
-    document.getElementById('n-title').value='';document.getElementById('n-body').value='';
+    setVal('n-title',''); setVal('n-body','');
     loadNotices();
   };
   async function loadNotices(){
@@ -137,6 +366,222 @@
     }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 공지가 없습니다.</p>';
   }
   window.delNotice=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'notices',id));loadNotices();} };
+
+  // ===== 메인화면(히어로) =====
+  const heroFile=document.getElementById('h-file');
+  heroFile.onchange=()=>{ const f=heroFile.files[0]; if(f) document.getElementById('h-preview').src=URL.createObjectURL(f); };
+  async function loadHero(){
+    try{
+      const snap=await getDoc(doc(db,'site','hero'));
+      if(!snap.exists()) return;
+      const h=snap.data();
+      setVal('h-label',h.label); setVal('h-title',h.title); setVal('h-sub',h.sub);
+      if(h.imageUrl) document.getElementById('h-preview').src=h.imageUrl;
+    }catch(e){ console.warn('메인화면 정보 로드 실패', e); }
+  }
+  document.getElementById('saveHeroBtn').onclick=async()=>{
+    try{
+      const data={label:val('h-label'),title:val('h-title'),sub:val('h-sub'),updatedAt:serverTimestamp()};
+      const f=heroFile.files[0];
+      if(f){ data.imageUrl=(await uploadImg('site',f)).url; }
+      await setDoc(doc(db,'site','hero'),data,{merge:true});
+      if(data.imageUrl) document.getElementById('h-preview').src=data.imageUrl;
+      heroFile.value='';
+      show('heroMsg','ok','저장되었습니다. 홈페이지 메인화면에 바로 반영됩니다.');
+    }catch(e){ show('heroMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 회사 정보 =====
+  const INFO_FIELDS=['name','ceo','tel','mobile','kakao','address','addressNote','hours','bizno','corpno','footerDesc','lat','lng'];
+  async function loadInfo(){
+    try{
+      const snap=await getDoc(doc(db,'site','info'));
+      if(!snap.exists()) return;
+      const v=snap.data();
+      INFO_FIELDS.forEach(k=>setVal('i-'+k,v[k]));
+    }catch(e){ console.warn('회사 정보 로드 실패', e); }
+  }
+  document.getElementById('saveInfoBtn').onclick=async()=>{
+    try{
+      const data={updatedAt:serverTimestamp()};
+      INFO_FIELDS.forEach(k=>data[k]=val('i-'+k));
+      await setDoc(doc(db,'site','info'),data,{merge:true});
+      show('infoMsg','ok','회사 정보가 저장되었습니다. 홈페이지 전체에 반영됩니다.');
+    }catch(e){ show('infoMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 거래 건설사 =====
+  window.addPartnerItem=(v='')=>{
+    const div=document.createElement('div'); div.className='item-input-row';
+    div.innerHTML=`<input class="partner-input" placeholder="예: DL이앤씨"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+    div.querySelector('input').value=v;
+    document.getElementById('p-items').appendChild(div);
+  };
+  async function loadPartners(){
+    try{
+      const snap=await getDoc(doc(db,'site','partners'));
+      const box=document.getElementById('p-items'); box.innerHTML='';
+      const items=snap.exists()?(snap.data().items||[]):[];
+      if(items.length) items.forEach(v=>addPartnerItem(v)); else addPartnerItem();
+    }catch(e){ console.warn('건설사 목록 로드 실패', e); }
+  }
+  document.getElementById('savePartnersBtn').onclick=async()=>{
+    try{
+      const items=[...document.querySelectorAll('.partner-input')].map(i=>i.value.trim()).filter(Boolean);
+      await setDoc(doc(db,'site','partners'),{items,updatedAt:serverTimestamp()},{merge:true});
+      show('partnersMsg','ok','건설사 목록이 저장되었습니다.');
+    }catch(e){ show('partnersMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 회사소개 =====
+  const aboutFile=document.getElementById('a-file');
+  aboutFile.onchange=()=>{ const f=aboutFile.files[0]; if(f) document.getElementById('a-preview').src=URL.createObjectURL(f); };
+  async function loadAbout(){
+    try{
+      const snap=await getDoc(doc(db,'site','about'));
+      if(!snap.exists()) return;
+      const a=snap.data();
+      setVal('a-greetTitle',a.greetTitle); setVal('a-greetBody',a.greetBody);
+      setVal('a-founded',a.founded); setVal('a-capital',a.capital);
+      setVal('a-staff',a.staff); setVal('a-fields',a.fields);
+      if(a.imageUrl) document.getElementById('a-preview').src=a.imageUrl;
+    }catch(e){ console.warn('회사소개 로드 실패', e); }
+  }
+  document.getElementById('saveAboutBtn').onclick=async()=>{
+    try{
+      const data={
+        greetTitle:val('a-greetTitle'), greetBody:val('a-greetBody'),
+        founded:val('a-founded'), capital:val('a-capital'),
+        staff:val('a-staff'), fields:val('a-fields'),
+        updatedAt:serverTimestamp()
+      };
+      const f=aboutFile.files[0];
+      if(f){ data.imageUrl=(await uploadImg('site',f)).url; }
+      await setDoc(doc(db,'site','about'),data,{merge:true});
+      if(data.imageUrl) document.getElementById('a-preview').src=data.imageUrl;
+      aboutFile.value='';
+      show('aboutMsg','ok','회사소개가 저장되었습니다.');
+    }catch(e){ show('aboutMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 연혁 =====
+  window.addHistoryItem=(year='',desc='')=>{
+    const div=document.createElement('div'); div.className='item-input-row';
+    div.innerHTML=`<input class="hist-year" placeholder="2014. 12" style="flex:0 0 130px"><input class="hist-desc" placeholder="스마트푸드㈜ 설립"><button onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+    div.querySelector('.hist-year').value=year;
+    div.querySelector('.hist-desc').value=desc;
+    document.getElementById('hist-items').appendChild(div);
+  };
+  async function loadHistory(){
+    try{
+      const snap=await getDoc(doc(db,'site','history'));
+      const box=document.getElementById('hist-items'); box.innerHTML='';
+      const items=snap.exists()?(snap.data().items||[]):[];
+      if(items.length) items.forEach(h=>addHistoryItem(h.year,h.desc)); else addHistoryItem();
+    }catch(e){ console.warn('연혁 로드 실패', e); }
+  }
+  document.getElementById('saveHistoryBtn').onclick=async()=>{
+    try{
+      const items=[...document.querySelectorAll('#hist-items .item-input-row')].map(row=>({
+        year:row.querySelector('.hist-year').value.trim(),
+        desc:row.querySelector('.hist-desc').value.trim()
+      })).filter(h=>h.year&&h.desc);
+      await setDoc(doc(db,'site','history'),{items,updatedAt:serverTimestamp()},{merge:true});
+      show('historyMsg','ok','연혁이 저장되었습니다.');
+    }catch(e){ show('historyMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 서비스 사진 =====
+  document.querySelectorAll('[data-svc]').forEach(inp=>{
+    inp.onchange=()=>{ const f=inp.files[0]; if(f) document.getElementById('sv-'+inp.dataset.svc).src=URL.createObjectURL(f); };
+  });
+  async function loadServices(){
+    try{
+      const snap=await getDoc(doc(db,'site','services'));
+      if(!snap.exists()) return;
+      const s=snap.data();
+      ['siteImg','cafeteriaImg','cateringImg'].forEach(k=>{ if(s[k]) document.getElementById('sv-'+k).src=s[k]; });
+    }catch(e){ console.warn('서비스 사진 로드 실패', e); }
+  }
+  document.getElementById('saveServicesBtn').onclick=async()=>{
+    try{
+      const data={updatedAt:serverTimestamp()}; let count=0;
+      for(const inp of document.querySelectorAll('[data-svc]')){
+        const f=inp.files[0];
+        if(f){ data[inp.dataset.svc]=(await uploadImg('site',f)).url; count++; }
+      }
+      if(!count){show('servicesMsg','err','교체할 사진을 먼저 선택하세요.');return;}
+      await setDoc(doc(db,'site','services'),data,{merge:true});
+      document.querySelectorAll('[data-svc]').forEach(i=>i.value='');
+      show('servicesMsg','ok',count+'개 사진이 저장되었습니다.');
+    }catch(e){ show('servicesMsg','err','저장 실패: '+(e.message||e)); }
+  };
+
+  // ===== 운영 실적 =====
+  document.getElementById('saveRecordBtn').onclick=async()=>{
+    const year=val('r-year'), title=val('r-title'), builder=val('r-builder');
+    if(!year||!title||!builder){show('recordMsg','err','연도·현장식당명·건설사는 필수입니다.');return;}
+    try{
+      await addDoc(collection(db,'records'),{
+        year, title, builder,
+        headcount:val('r-headcount'), period:val('r-period'),
+        createdAt:serverTimestamp()
+      });
+      ['r-year','r-title','r-builder','r-headcount','r-period'].forEach(id=>setVal(id,''));
+      show('recordMsg','ok','실적이 등록되었습니다.');
+      loadRecords();
+    }catch(e){ show('recordMsg','err','등록 실패: '+(e.message||e)); }
+  };
+  async function loadRecords(){
+    const snap=await getDocs(query(collection(db,'records'),orderBy('year','desc')));
+    document.getElementById('recordListAdmin').innerHTML=snap.docs.map(d=>{
+      const r=d.data();
+      return `<div class="list-row"><span><b>${r.year}</b> · ${r.title}<br><span style="color:var(--text-mute);font-size:13px">${r.builder} ${r.headcount?'· '+r.headcount:''} ${r.period?'· '+r.period:''}</span></span><span class="del" onclick="delRecord('${d.id}')">삭제</span></div>`;
+    }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 실적이 없습니다. (홈페이지에는 기본 실적 표가 표시됩니다)</p>';
+  }
+  window.delRecord=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'records',id));loadRecords();} };
+
+  // ===== 현장 사진 (갤러리) =====
+  document.getElementById('saveGalleryBtn').onclick=async()=>{
+    const f=document.getElementById('g-file').files[0];
+    if(!f){show('galleryMsg','err','사진 파일을 선택하세요.');return;}
+    try{
+      const up=await uploadImg('gallery',f);
+      await addDoc(collection(db,'gallery'),{
+        url:up.url, path:up.path,
+        caption:val('g-caption')||'현장식당',
+        createdAt:serverTimestamp()
+      });
+      document.getElementById('g-file').value=''; setVal('g-caption','');
+      show('galleryMsg','ok','사진이 업로드되었습니다.');
+      loadGallery();
+    }catch(e){ show('galleryMsg','err','업로드 실패: '+(e.message||e)); }
+  };
+  async function loadGallery(){
+    const snap=await getDocs(query(collection(db,'gallery'),orderBy('createdAt','desc')));
+    document.getElementById('galleryListAdmin').innerHTML=snap.docs.map(d=>{
+      const g=d.data();
+      return `<div class="g-admin-item"><img src="${g.url}" alt="" loading="lazy">
+        <div class="cap"><span>${g.caption||''}</span>
+        <span style="white-space:nowrap"><span class="edit-link" onclick="editCaption('${d.id}')">수정</span><span class="del" onclick="delGallery('${d.id}')">삭제</span></span></div></div>`;
+    }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 사진이 없습니다. (홈페이지에는 기본 갤러리가 표시됩니다)</p>';
+  }
+  window.editCaption=async id=>{
+    const snap=await getDoc(doc(db,'gallery',id));
+    const cur=snap.exists()?(snap.data().caption||''):'';
+    const next=prompt('사진 설명을 입력하세요.',cur);
+    if(next===null) return;
+    await updateDoc(doc(db,'gallery',id),{caption:next.trim()});
+    loadGallery();
+  };
+  window.delGallery=async id=>{
+    if(!confirm('사진을 삭제하시겠습니까?')) return;
+    const snap=await getDoc(doc(db,'gallery',id));
+    const path=snap.exists()?snap.data().path:null;
+    await deleteDoc(doc(db,'gallery',id));
+    if(path) deleteImg(path);
+    loadGallery();
+  };
 
   // ===== 문의 =====
   async function loadInquiries(){
@@ -151,7 +596,12 @@
   }
   window.delInq=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'inquiries',id));loadInquiries();} };
 
-  function init(){ addMenuItem(); loadMenus(); loadNotices(); loadInquiries(); }
+  function init(){
+    addMenuItem();
+    loadMenus(); loadNotices(); loadInquiries(); loadHero();
+    loadSeasons(); loadInfo(); loadPartners(); loadAbout(); loadHistory();
+    loadServices(); loadRecords(); loadGallery();
+  }
 </script>
 </body>
 </html>

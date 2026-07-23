@@ -13,10 +13,10 @@
 <div id="header-slot"></div>
 
 <!-- 히어로 -->
-<section class="hero"><div class="container">
-  <p class="section-label">건설현장 식당 전문기업</p>
-  <h1>신선하고 알찬 식단으로<br>건강한 현장을 책임집니다</h1>
-  <p>현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영</p>
+<section class="hero" id="hero"><div class="container">
+  <p class="section-label" id="heroLabel">건설현장 식당 전문기업</p>
+  <h1 id="heroTitle">신선하고 알찬 식단으로<br>건강한 현장을 책임집니다</h1>
+  <p id="heroSub">현장식당 · 구내식당 · 캐더링 전문 · 전국 현장 운영</p>
 </div></section>
 
 <!-- 오늘의 식단 -->
@@ -57,7 +57,7 @@
 <section class="section" style="padding-top:0"><div class="container">
   <h2 class="section-title">주요 거래 건설사</h2>
   <p class="section-sub">국내 주요 건설사 현장에서 검증된 운영 경험을 쌓아왔습니다.</p>
-  <div class="partners">
+  <div class="partners" id="partnersList">
     <span>DL이앤씨</span><span>현대엔지니어링</span><span>SK에코플랜트</span><span>포스코건설</span>
     <span>두산건설</span><span>롯데건설</span><span>대림건설</span><span>코오롱건설</span>
     <span>금강주택</span><span>SGC건설</span><span>삼우종합건설</span><span>LG서브원</span>
@@ -70,7 +70,7 @@
   <p class="section-sub" style="margin:0 auto 28px">현장 규모와 식수에 맞춰 최적의 급식 플랜을 제안해 드립니다.</p>
   <div class="hero-actions">
     <a href="contact.html" class="btn btn-gold"><i class="ti ti-file-text"></i> 견적 문의</a>
-    <a href="tel:0314218332" class="btn btn-line"><i class="ti ti-phone"></i> 031-421-8332</a>
+    <a href="tel:0314218332" class="btn btn-line" data-site-tel-btn><i class="ti ti-phone"></i> <span>031-421-8332</span></a>
   </div>
 </div></section>
 
@@ -122,7 +122,43 @@
     }
   }
 
+  // 메인화면(히어로) — 관리자에서 저장한 문구·배경 사진 반영 (미설정 시 기본값 유지)
+  async function loadHero(){
+    if(!db) return;
+    try{
+      const { doc, getDoc } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const snap = await getDoc(doc(db,'site','hero'));
+      if(!snap.exists()) return;
+      const h = snap.data();
+      const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      if(h.label) document.getElementById('heroLabel').textContent = h.label;
+      if(h.title) document.getElementById('heroTitle').innerHTML = h.title.split('\n').map(esc).join('<br>');
+      if(h.sub) document.getElementById('heroSub').textContent = h.sub;
+      if(h.imageUrl) document.getElementById('hero').style.backgroundImage =
+        `linear-gradient(rgba(244,250,245,.55),rgba(244,250,245,.55)),url("${h.imageUrl.replace(/["\\]/g,'')}")`;
+    }catch(e){ /* 실패 시 기본 메인화면 유지 */ }
+  }
+
+  // 주요 거래 건설사 — 관리자 [회사 정보 > 거래 건설사] 저장값 반영
+  async function loadPartners(){
+    if(!db) return;
+    try{
+      const { doc, getDoc } =
+        await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const snap = await getDoc(doc(db,'site','partners'));
+      if(!snap.exists()) return;
+      const items = snap.data().items||[];
+      if(!items.length) return;
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      document.getElementById('partnersList').innerHTML = items.map(p=>`<span>${esc(p)}</span>`).join('');
+    }catch(e){ /* 실패 시 기본 목록 유지 */ }
+  }
+
   loadTodayMenu();
+  loadHero();
+  loadPartners();
 </script>
+<script type="module" src="js/site-live.js"></script>
 </body>
 </html>

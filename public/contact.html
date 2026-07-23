@@ -32,7 +32,7 @@
     <div class="form-row"><label>문의 내용 *</label><textarea id="f-msg" placeholder="현장 위치, 운영 기간, 요청사항 등을 자유롭게 작성해 주세요."></textarea></div>
     <button class="btn btn-gold" style="width:100%;justify-content:center" id="submitBtn"><i class="ti ti-send"></i> 문의 보내기</button>
     <div class="msg" id="formMsg"></div>
-    <p style="text-align:center;color:var(--text-mute);font-size:13px;margin-top:20px">또는 전화 <a href="tel:0314218332" class="gold">031-421-8332</a> · 휴대폰 <a href="tel:01023609015" class="gold">010-2360-9015</a>로 바로 상담 가능합니다.</p>
+    <p style="text-align:center;color:var(--text-mute);font-size:13px;margin-top:20px">또는 전화 <a href="tel:0314218332" class="gold" data-site-tel>031-421-8332</a> · 휴대폰 <a href="tel:01023609015" class="gold" data-site-mobile>010-2360-9015</a>로 바로 상담 가능합니다.</p>
   </div>
 </div></section>
 <div id="footer-slot"></div>
@@ -70,5 +70,6 @@
   });
   function show(type,text){ msg.className='msg '+type; msg.textContent=text; }
 </script>
+<script type="module" src="js/site-live.js"></script>
 </body>
 </html>

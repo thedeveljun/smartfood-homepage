@@ -1,5 +1,5 @@
 // ===== 공통 스크립트 =====
-// 회사 정보 (한 곳에서 관리)
+// 회사 정보 (기본값 — 관리자 대시보드 [회사 정보]에서 저장하면 site/info 값으로 덮어써짐)
 const SITE = {
   name: "스마트푸드(주)",
   ceo: "이선유",
@@ -9,7 +9,11 @@ const SITE = {
   mobileRaw: "01023609015",
   kakao: "https://pf.kakao.com/_yourchannel",   // 카카오톡 채널 URL로 교체
   address: "경기도 안양시 동안구 시민대로 230 B동 609호",
-  bizno: "430-86-00146"
+  addressNote: "지하철 4호선 평촌역 인근 (관양동)",
+  hours: "평일 08:00 ~ 18:00 (상담 가능)",
+  bizno: "430-86-00146",
+  corpno: "134111-0398409",
+  footerDesc: "건설현장 식당 전문기업\n신선하고 알찬 식단으로\n건강한 현장을 책임집니다."
 };
 
 // 헤더 렌더
@@ -44,7 +48,7 @@ function renderFooter(){
     <div class="footer-grid">
       <div>
         <div class="logo" style="margin-bottom:14px"><img src="img/logo.jpg" class="logo-img logo-img--footer" alt="${SITE.name}"></div>
-        <p>건설현장 식당 전문기업<br>신선하고 알찬 식단으로<br>건강한 현장을 책임집니다.</p>
+        <p>${(SITE.footerDesc||'').split('\n').join('<br>')}</p>
       </div>
       <div>
         <h4>바로가기</h4>
@@ -78,6 +82,7 @@ function setFavicon(){
 }
 
 function mountLayout(active){
+  window.__navActive = active;           // site-live.js가 회사정보 반영 후 재렌더할 때 사용
   setFavicon();
   const h=document.getElementById('header-slot'); if(h) h.innerHTML=renderHeader(active);
   const f=document.getElementById('footer-slot'); if(f) f.innerHTML=renderFooter();
