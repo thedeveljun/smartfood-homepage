@@ -107,14 +107,14 @@ img{max-width:100%;display:block}
 .svc{padding:30px 26px;text-align:center}
 .svc .ic{width:58px;height:58px;border-radius:14px;background:var(--bg-soft2);color:var(--green);font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
 .svc h3{font-size:18px;color:var(--cream);margin-bottom:10px}
-.svc p{font-size:14px;color:var(--text-dim)}
+.svc p{font-size:15.5px;color:var(--text-dim)}
 .reason-list{display:grid;grid-template-columns:1fr 1fr;padding:8px 14px}
 .reason-item{display:flex;align-items:center;gap:18px;padding:22px 22px}
 .reason-item:nth-child(odd){border-right:1px solid var(--gold-line)}
 .reason-item:nth-child(-n+2){border-bottom:1px solid var(--gold-line)}
 .reason-item .ic{width:46px;height:46px;border-radius:12px;background:var(--bg-soft2);color:var(--green);font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .reason-item h3{font-size:18px;color:var(--cream);margin-bottom:5px}
-.reason-item p{font-size:14px;color:var(--text-dim);line-height:1.6}
+.reason-item p{font-size:15.5px;color:var(--text-dim);line-height:1.6}
 .reason-list.indigo{background:#e8ebfa;border-color:#d6dbf4}
 .reason-list.indigo .reason-item{border-color:#d6dbf4}
 .reason-list.indigo .reason-item .ic{background:#dadffb;color:#4f57c0}
@@ -146,7 +146,7 @@ img{max-width:100%;display:block}
 .svc-photo__body{padding:22px 22px 24px}
 .svc-photo__body h3{font-size:20px;font-weight:700;color:#fff;margin-bottom:9px;padding-bottom:9px;position:relative;text-shadow:0 1px 4px rgba(0,0,0,.55)}
 .svc-photo__body h3::after{content:'';position:absolute;left:0;bottom:0;width:34px;height:3px;border-radius:3px;background:var(--green)}
-.svc-photo__body p{font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.95);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.svc-photo__body p{font-size:15.5px;line-height:1.65;color:rgba(255,255,255,.95);text-shadow:0 1px 4px rgba(0,0,0,.6)}
 
 /* 이용 절차 (프로세스) */
 .process{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:8px}
@@ -155,14 +155,15 @@ img{max-width:100%;display:block}
 .step-no{position:absolute;top:12px;right:14px;font-size:14px;font-weight:800;color:#a7add6}
 .step-ic{width:54px;height:54px;border-radius:50%;background:#dadffb;color:#4f57c0;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .step h4{font-size:15.5px;color:var(--cream);margin-bottom:8px}
-.step p{font-size:13px;color:var(--text-dim);line-height:1.6}
+.step p{font-size:15.5px;color:var(--text-dim);line-height:1.6}
+.process .step p{text-align:left}
 
 /* 식단 박스 */
 .menu-box{background:#f8f5ee;border:2px solid #e7dfcd;border-radius:var(--radius);padding:11px 20px}
 .menu-date{font-size:18px;color:var(--green);margin-bottom:8px;font-weight:700}
 .menu-note{font-size:.84rem;color:#999999;font-weight:400;margin-top:12px}
 .menu-items{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.menu-items .mi{font-size:14.5px;display:flex;align-items:center;gap:8px}
+.menu-items .mi{font-size:15.5px;display:flex;align-items:center;gap:8px}
 .menu-items .mi::before{content:'•';color:var(--green)}
 
 /* 갤러리 */
@@ -179,7 +180,7 @@ img{max-width:100%;display:block}
 .mtab.active,.mtab:hover{background:var(--green);border-color:var(--green);color:#fff}
 .menu-img-wrap{border:1px solid var(--gold-line);border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:0 6px 20px rgba(24,21,18,.07)}
 .menu-img-wrap img{width:100%;display:block}
-.menu-hint{color:var(--text-mute);font-size:13px;margin-top:12px;text-align:center}
+.menu-hint{color:var(--text-mute);font-size:15.5px;margin-top:12px;text-align:center}
 
 /* 3대 서비스 정책 */
 .policy{display:flex;flex-direction:column;gap:16px;margin-top:26px}
@@ -190,8 +191,8 @@ img{max-width:100%;display:block}
 .policy-items span{background:#dadffb;color:#4f57c0;font-weight:700;font-size:14.5px;padding:10px 20px;border-radius:30px}
 
 /* 실적/정보 테이블 */
-.record-table{width:100%;border-collapse:collapse;font-size:14px}
-.record-table th{background:var(--bg-soft2);color:var(--green);padding:14px;text-align:left;font-weight:700;font-size:13px}
+.record-table{width:100%;border-collapse:collapse;font-size:15.5px}
+.record-table th{background:var(--bg-soft2);color:var(--green);padding:14px;text-align:left;font-weight:700;font-size:15.5px}
 .record-table td{padding:14px;border-bottom:1px solid var(--gold-line);color:var(--text-dim)}
 /* 운영 실적 표 — 블루 계열 (회사 개요 표는 제외) */
 .record-table:not(.info-table) th{background:#dbe9f7;color:#155a9e}
@@ -200,8 +201,8 @@ img{max-width:100%;display:block}
 .record-table:not(.info-table) tbody tr:nth-child(even) td{background:#eef0fb}  /* 연한 인디고 파스텔 */
 .record-table:not(.info-table) tbody tr:hover td{background:#e8f1fa}
 /* 회사 개요(키-값) 테이블 */
-.info-table th{background:#f5efe1;color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid #ece4d3}
-.info-table td{color:var(--text-dim)}
+.info-table th{background:#f5efe1;color:var(--cream);white-space:nowrap;width:130px;border-bottom:1px solid #ece4d3;font-size:15.5px}
+.info-table td{color:var(--text-dim);font-size:15.5px}
 
 /* 거래 건설사 칩 */
 .partners{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
@@ -213,12 +214,12 @@ img{max-width:100%;display:block}
 .timeline li{display:flex;gap:18px;align-items:flex-start;padding:0 0 24px 24px;border-left:2px solid var(--gold-dim);position:relative}
 .timeline li:last-child{border-left-color:transparent;padding-bottom:0}
 .timeline li::before{content:'';position:absolute;left:-8px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--green);border:3px solid var(--bg)}
-.t-year{color:var(--green);font-weight:700;font-size:14.5px;min-width:76px;flex-shrink:0}
-.t-desc{color:var(--text-dim);font-size:14.5px}
+.t-year{color:var(--green);font-weight:700;font-size:15.5px;min-width:76px;flex-shrink:0}
+.t-desc{color:var(--text-dim);font-size:15.5px}
 
 /* 체크 리스트 (위생) */
 .check-list{list-style:none}
-.check-list li{position:relative;padding:8px 0 8px 28px;font-size:14.5px;color:var(--text-dim);border-bottom:1px solid var(--gold-line)}
+.check-list li{position:relative;padding:8px 0 8px 28px;font-size:15.5px;color:var(--text-dim);border-bottom:1px solid var(--gold-line)}
 .check-list li:last-child{border-bottom:none}
 .check-list li::before{content:'\2713';position:absolute;left:2px;top:8px;color:var(--green);font-weight:800}
 
@@ -237,23 +238,23 @@ img{max-width:100%;display:block}
 .tree li:last-child::before{border-right:1.5px solid var(--line);border-radius:0 10px 0 0}
 .tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:1.5px solid var(--line);width:0;height:30px}
 /* 공통 박스 */
-.tree .org-box{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:14px;padding:14px 26px;min-width:130px;font-size:14.5px;font-weight:700;letter-spacing:.2px;color:var(--cream);box-shadow:0 4px 16px rgba(18,45,32,.06);white-space:nowrap;transition:transform .18s ease,box-shadow .18s ease}
+.tree .org-box{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:var(--bg-soft);border:2px solid var(--gold-line);border-radius:14px;padding:14px 26px;min-width:130px;font-size:15.5px;font-weight:700;letter-spacing:.2px;color:var(--cream);box-shadow:0 4px 16px rgba(18,45,32,.06);white-space:nowrap;transition:transform .18s ease,box-shadow .18s ease}
 .tree .org-box:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(18,45,32,.12)}
 /* 대표이사·사장 : 프레시 그린 카드 */
 .tree .org-box.lead{background:linear-gradient(155deg,#23b768 0%,#129150 100%);border:0;color:#fff;padding:18px 20px;width:213px;justify-content:center;box-shadow:0 12px 26px rgba(18,120,74,.30)}
 .tree .org-box.lead::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:26px;height:2px;border-radius:2px;background:rgba(255,255,255,.85)}
-.tree .org-box.lead .org-role{font-size:12px;font-weight:600;letter-spacing:3px;color:#d7f5e4;margin-top:6px}
-.tree .org-box.lead .org-name{font-weight:700;font-size:17px;letter-spacing:2px;color:#fff}
+.tree .org-box.lead .org-role{font-size:13px;font-weight:600;letter-spacing:3px;color:#d7f5e4;margin-top:6px}
+.tree .org-box.lead .org-name{font-weight:700;font-size:18px;letter-spacing:2px;color:#fff}
 /* 부서 : 소프트 틸 카드 */
 .tree .org-box.dept{background:var(--accent-soft);border:1px solid rgba(16,176,163,.32);color:#0c8177;font-weight:800;letter-spacing:1px}
 /* 팀 : 화이트 필 */
-.tree .org-box.team{font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);border:2px solid var(--gold-line);padding:12px 22px;min-width:112px}
+.tree .org-box.team{font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);border:2px solid var(--gold-line);padding:12px 22px;min-width:112px}
 .tree .org-box.team i{font-size:16px;color:var(--green)}
 
 /* 폼 */
 .form-wrap{max-width:680px;margin:0 auto}
 .form-row{margin-bottom:18px}
-.form-row label{display:block;font-size:14px;color:var(--text-dim);margin-bottom:8px}
+.form-row label{display:block;font-size:15.5px;color:var(--text-dim);margin-bottom:8px}
 .form-row input,.form-row textarea,.form-row select{width:100%;padding:13px 15px;background:#eef5fc;border:1px solid #c7dcf2;border-radius:8px;color:var(--text);font-size:15px;font-family:inherit}
 .form-row input:focus,.form-row textarea:focus,.form-row select:focus{outline:none;border-color:#1f6fc4;box-shadow:0 0 0 3px rgba(31,111,196,.15)}
 .form-row textarea{resize:vertical;min-height:120px}
@@ -281,7 +282,7 @@ img{max-width:100%;display:block}
 .page-head p{color:var(--text-dim)}
 
 /* 메시지 */
-.msg{padding:14px 18px;border-radius:8px;font-size:14px;margin-top:14px;display:none}
+.msg{padding:14px 18px;border-radius:8px;font-size:15.5px;margin-top:14px;display:none}
 .msg.ok{background:rgba(47,158,68,.12);color:#1f7a32;border:1px solid rgba(47,158,68,.4);display:block}
 .msg.err{background:rgba(200,60,60,.10);color:#b43c3c;border:1px solid rgba(200,60,60,.35);display:block}
 

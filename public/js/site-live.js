@@ -14,7 +14,7 @@ async function applySiteInfo(){
     if(!snap.exists()) return;
     const v = snap.data();
     // 값이 입력된 필드만 덮어쓰기
-    ['name','ceo','tel','mobile','inquiryTel','kakao','address','addressNote','hours','bizno','corpno','footerDesc']
+    ['name','ceo','tel','mobile','inquiryTel','kakao','address','hours','bizno','corpno','footerDesc']
       .forEach(k=>{ if(v[k]) SITE[k]=v[k]; });
     SITE.telRaw = digits(SITE.tel);
     SITE.mobileRaw = digits(SITE.mobile);
@@ -47,7 +47,6 @@ async function applySiteInfo(){
       const t=el.querySelector('span'); if(t) t.textContent=iqTel;
     });
     document.querySelectorAll('[data-site-address]').forEach(el=>el.textContent=SITE.address);
-    document.querySelectorAll('[data-site-address-note]').forEach(el=>el.textContent=SITE.addressNote);
     document.querySelectorAll('[data-site-hours]').forEach(el=>el.textContent=SITE.hours);
     document.querySelectorAll('[data-site-maplink]').forEach(el=>{
       el.href='https://map.kakao.com/link/search/'+encodeURIComponent(SITE.address);
