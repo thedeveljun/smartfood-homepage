@@ -17,6 +17,7 @@
   .admin-card h3{color:var(--cream);font-size:17px;margin-bottom:18px}
   .list-row{display:flex;justify-content:space-between;align-items:center;padding:14px;border:.5px solid var(--gold-line);border-radius:8px;margin-bottom:10px;font-size:14px}
   .del{color:#c0392b;cursor:pointer;font-size:13px}
+  .edit{color:var(--text-mute);cursor:pointer;font-size:13px;margin-right:12px}
   .edit-link{color:var(--gold);cursor:pointer;font-size:13px;margin-right:12px}
   .item-input-row{display:flex;gap:8px;margin-bottom:8px}
   .item-input-row input{flex:1}
@@ -248,7 +249,7 @@
   <!-- 운영 실적 -->
   <div class="panel" id="panel-records">
     <div class="admin-card">
-      <h3>운영 실적 등록</h3>
+      <h3 id="recordFormTitle">운영 실적 등록</h3>
       <div class="form-grid">
         <div class="form-row"><label>연도</label><input id="r-year" placeholder="2026"></div>
         <div class="form-row"><label>현장식당명</label><input id="r-title" placeholder="안양 관양고주변 도시개발사업"></div>
@@ -259,6 +260,7 @@
       </div>
       <div class="form-row"><label>운영기간</label><input id="r-period" placeholder="2026. 3 ~"></div>
       <button class="btn btn-gold" id="saveRecordBtn"><i class="ti ti-check"></i> 실적 등록</button>
+      <button class="btn btn-line" id="cancelRecordEditBtn" style="display:none;margin-left:8px">취소</button>
       <div class="msg" id="recordMsg"></div>
       <p class="hint">실적이 1건 이상 등록되면 홈페이지 [운영 실적] 표가 등록된 실적으로 교체됩니다.</p>
     </div>
@@ -766,28 +768,49 @@
   };
 
   // ===== 운영 실적 =====
+  const recordFields=['r-year','r-title','r-builder','r-headcount','r-period'];
+  let recordCache={}, editingRecordId=null;
+  function setRecordEditMode(id){
+    editingRecordId=id;
+    document.getElementById('recordFormTitle').textContent=id?'운영 실적 수정':'운영 실적 등록';
+    document.getElementById('saveRecordBtn').innerHTML=id?'<i class="ti ti-check"></i> 수정 저장':'<i class="ti ti-check"></i> 실적 등록';
+    document.getElementById('cancelRecordEditBtn').style.display=id?'':'none';
+    if(!id) recordFields.forEach(f=>setVal(f,''));
+  }
+  document.getElementById('cancelRecordEditBtn').onclick=()=>setRecordEditMode(null);
   document.getElementById('saveRecordBtn').onclick=async()=>{
     const year=val('r-year'), title=val('r-title'), builder=val('r-builder');
     if(!year||!title||!builder){show('recordMsg','err','연도·현장식당명·건설사는 필수입니다.');return;}
+    const data={ year, title, builder, headcount:val('r-headcount'), period:val('r-period') };
     try{
-      await addDoc(collection(db,'records'),{
-        year, title, builder,
-        headcount:val('r-headcount'), period:val('r-period'),
-        createdAt:serverTimestamp()
-      });
-      ['r-year','r-title','r-builder','r-headcount','r-period'].forEach(id=>setVal(id,''));
-      show('recordMsg','ok','실적이 등록되었습니다.');
+      if(editingRecordId){
+        await updateDoc(doc(db,'records',editingRecordId),{...data,updatedAt:serverTimestamp()});
+        show('recordMsg','ok','실적이 수정되었습니다.');
+      }else{
+        await addDoc(collection(db,'records'),{...data,createdAt:serverTimestamp()});
+        show('recordMsg','ok','실적이 등록되었습니다.');
+      }
+      setRecordEditMode(null);
       loadRecords();
-    }catch(e){ show('recordMsg','err','등록 실패: '+(e.message||e)); }
+    }catch(e){ show('recordMsg','err',(editingRecordId?'수정':'등록')+' 실패: '+(e.message||e)); }
   };
   async function loadRecords(){
     const snap=await getDocs(query(collection(db,'records'),orderBy('year','desc')));
+    recordCache={};
     document.getElementById('recordListAdmin').innerHTML=snap.docs.map(d=>{
       const r=d.data();
-      return `<div class="list-row"><span><b>${r.year}</b> · ${r.title}<br><span style="color:var(--text-mute);font-size:13px">${r.builder} ${r.headcount?'· '+r.headcount:''} ${r.period?'· '+r.period:''}</span></span><span class="del" onclick="delRecord('${d.id}')">삭제</span></div>`;
+      recordCache[d.id]=r;
+      return `<div class="list-row"><span><b>${r.year}</b> · ${r.title}<br><span style="color:var(--text-mute);font-size:13px">${r.builder} ${r.headcount?'· '+r.headcount:''} ${r.period?'· '+r.period:''}</span></span><span style="white-space:nowrap"><span class="edit" onclick="editRecord('${d.id}')">수정</span><span class="del" onclick="delRecord('${d.id}')">삭제</span></span></div>`;
     }).join('')||'<p style="color:var(--text-mute);font-size:14px">등록된 실적이 없습니다. (홈페이지에는 기본 실적 표가 표시됩니다)</p>';
   }
-  window.delRecord=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'records',id));loadRecords();} };
+  window.editRecord=id=>{
+    const r=recordCache[id]; if(!r) return;
+    setVal('r-year',r.year||''); setVal('r-title',r.title||''); setVal('r-builder',r.builder||'');
+    setVal('r-headcount',r.headcount||''); setVal('r-period',r.period||'');
+    setRecordEditMode(id);
+    document.getElementById('panel-records').scrollIntoView({behavior:'smooth'});
+  };
+  window.delRecord=async id=>{ if(confirm('삭제하시겠습니까?')){await deleteDoc(doc(db,'records',id)); if(id===editingRecordId) setRecordEditMode(null); loadRecords();} };
 
   // ===== 현장 사진 (갤러리) =====
   document.getElementById('saveGalleryBtn').onclick=async()=>{
